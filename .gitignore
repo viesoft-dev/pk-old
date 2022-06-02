@@ -1,0 +1,7 @@
+# Intellij Idea
+/.idea/*
+!/.idea/icon.png
+
+# Gradle
+/build/
+/.gradle/

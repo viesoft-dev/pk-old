@@ -36,7 +36,6 @@ dependencies {
     api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines)
     // Configuration
     api("com.sksamuel.hoplite", "hoplite-yaml", hoplite)
-    api("com.github.vie10", "ronfy", ronfy)
     // Paper
     api("io.papermc.paper", "paper-api", paper)
     // Json

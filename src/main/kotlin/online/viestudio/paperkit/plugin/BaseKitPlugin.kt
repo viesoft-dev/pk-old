@@ -36,7 +36,7 @@ abstract class BaseKitPlugin(
     final override val serverScope: CoroutineScope by lazy {
         CoroutineScope(serverScopeExceptionHandler + SupervisorJob() + coroutineDispatcher)
     }
-    override val version: String get() = description.version
+    final override val version: String get() = description.version
     private val koinModulesContainer by lazy { KoinModulesContainer() }
     private val coroutineDispatcher by lazy { PrimaryCoroutineDispatcher(this, coroutineController) }
     private val coroutineController by lazy { PrimaryCoroutineController(this) }

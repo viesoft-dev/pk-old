@@ -1,6 +1,5 @@
 package online.viestudio.paperkit.logger
 
-import java.util.logging.Level
 import java.util.logging.Logger
 
 class KitLogger(
@@ -12,7 +11,7 @@ class KitLogger(
     }
 
     fun info(message: String) {
-        logger.log(Level.INFO, message)
+        logger.info(message)
     }
 
     inline fun w(throwable: Throwable? = null, block: () -> Any) {
@@ -20,7 +19,8 @@ class KitLogger(
     }
 
     fun warn(message: String, throwable: Throwable?) {
-        logger.log(Level.WARNING, message, throwable)
+        logger.warning(message)
+        throwable?.printStackTrace()
     }
 
     inline fun e(throwable: Throwable, block: () -> Any) {
@@ -28,7 +28,8 @@ class KitLogger(
     }
 
     fun error(message: String, throwable: Throwable) {
-        logger.log(Level.SEVERE, message, throwable)
+        logger.severe(message)
+        throwable.printStackTrace()
     }
 
     inline fun d(throwable: Throwable? = null, block: () -> Any) {
@@ -36,14 +37,7 @@ class KitLogger(
     }
 
     fun debug(message: String, throwable: Throwable?) {
-        logger.log(Level.FINE, message, throwable)
-    }
-
-    inline fun v(throwable: Throwable? = null, block: () -> Any) {
-        verbose(block().toString(), throwable)
-    }
-
-    fun verbose(message: String, throwable: Throwable?) {
-        logger.log(Level.FINEST, message, throwable)
+        logger.info(message)
+        throwable?.printStackTrace()
     }
 }

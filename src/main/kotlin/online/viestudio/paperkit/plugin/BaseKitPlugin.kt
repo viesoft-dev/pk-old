@@ -1,15 +1,24 @@
 package online.viestudio.paperkit.plugin
 
+import com.sksamuel.hoplite.ConfigLoaderBuilder
+import com.sksamuel.hoplite.addFileSource
+import com.sksamuel.hoplite.addResourceSource
 import kotlinx.coroutines.*
+import online.viestudio.paperkit.config.ConfigLoader
+import online.viestudio.paperkit.config.HopliteConfigLoaderBuilderFactory
+import online.viestudio.paperkit.config.LambdaConfigLoader
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.koin.KoinModulesContainer
 import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.paper.PrimaryCoroutineController
 import online.viestudio.paperkit.paper.PrimaryCoroutineDispatcher
+import online.viestudio.paperkit.plugin.KitPlugin.Companion.RESOURCES_CONFIG_DIRECTORY
 import online.viestudio.paperkit.plugin.KitPlugin.State
 import org.bukkit.plugin.java.JavaPlugin
+import org.koin.core.component.inject
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.bind
+import java.io.InputStream
 import kotlin.coroutines.CoroutineContext
 import kotlin.system.measureTimeMillis
 
@@ -37,9 +46,12 @@ abstract class BaseKitPlugin(
         CoroutineScope(serverScopeExceptionHandler + SupervisorJob() + coroutineDispatcher)
     }
     final override val version: String get() = description.version
+    protected val hopliteConfigLoaderBuilder: ConfigLoaderBuilder get() = hopliteConfigLoaderBuilderFactory.create()
+    private val hopliteConfigLoaderBuilderFactory: HopliteConfigLoaderBuilderFactory by inject()
     private val koinModulesContainer by lazy { KoinModulesContainer() }
     private val coroutineDispatcher by lazy { PrimaryCoroutineDispatcher(this, coroutineController) }
     private val coroutineController by lazy { PrimaryCoroutineController(this) }
+    private val registeredConfigLoaders: MutableList<ConfigLoader<*>> by lazy { ArrayList() }
     private val pluginScopeExceptionHandler
         get() = CoroutineExceptionHandler { _, throwable ->
             log.w(throwable) { "An unexpected exception has occurred" }
@@ -144,11 +156,16 @@ abstract class BaseKitPlugin(
         val result: Result<Unit>
         val measuredMillis = measureTimeMillis {
             result = runCatching {
+                supervisorScope {
+                    registeredConfigLoaders.forEach {
+                        async { it.load() }.start()
+                    }
+                }
                 onReload()
             }
         }
         result.onFailure {
-            log.w(it) { "Reloading plugin failed to an unexpected exception!" }
+            log.w(it) { "Reloading plugin failed due to an unexpected exception!" }
         }.onSuccess {
             log.d { "Plugin reloaded in $measuredMillis millis." }
         }.isSuccess
@@ -156,5 +173,40 @@ abstract class BaseKitPlugin(
 
     protected open suspend fun onReload() {
         // Should do nothing by default
+    }
+
+    protected inline fun <reified T : Any> registeredConfigLoader(
+        fileName: String,
+        writeDefaultIfNotExists: Boolean = true,
+    ): ConfigLoader<T> = LambdaConfigLoader<T> {
+        loadConfig(fileName, writeDefaultIfNotExists)
+    }.apply(this::registerConfigLoader)
+
+    protected fun registerConfigLoader(configLoader: ConfigLoader<*>) {
+        registeredConfigLoaders.add(configLoader)
+    }
+
+    protected fun unregisterConfigLoader(configLoader: ConfigLoader<*>) {
+        registeredConfigLoaders.remove(configLoader)
+    }
+
+    protected inline fun <reified T : Any> loadConfig(fileName: String, writeDefaultIfNotExists: Boolean = true): T {
+        if (writeDefaultIfNotExists) writeDefaultConfigIfNotExists(fileName)
+        return hopliteConfigLoaderBuilder.withClassLoader(this::class.java.classLoader)
+            .addFileSource(dataFolder.resolve(fileName), optional = true)
+            .addResourceSource("/$RESOURCES_CONFIG_DIRECTORY/$fileName")
+            .build()
+            .loadConfigOrThrow()
+    }
+
+    protected fun writeDefaultConfigIfNotExists(fileName: String) {
+        val file = dataFolder.apply {
+            if (!exists()) mkdirs()
+        }.resolve(fileName)
+        if (file.exists()) return
+
+        val defaultContentBytes =
+            getResource("$RESOURCES_CONFIG_DIRECTORY/$fileName")?.use(InputStream::readAllBytes) ?: return
+        file.outputStream().use { it.write(defaultContentBytes) }
     }
 }

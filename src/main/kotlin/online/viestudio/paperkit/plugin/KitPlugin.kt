@@ -29,4 +29,9 @@ interface KitPlugin : Plugin, KoinComponent {
         Stopping,
         Stopped,
     }
+
+    companion object {
+
+        const val RESOURCES_CONFIG_DIRECTORY = "config"
+    }
 }

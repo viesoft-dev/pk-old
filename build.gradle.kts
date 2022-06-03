@@ -66,7 +66,7 @@ publishing {
 with(tasks) {
     processResources {
         val properties = linkedMapOf(
-            "version" to version.toString(),
+            "version" to project.version.toString(),
         )
 
         filesMatching(
@@ -91,7 +91,7 @@ with(tasks) {
     }
 
     wrapper {
-        version = "7.4.2"
+        gradleVersion = "7.4.2"
     }
 
     java {
@@ -99,6 +99,9 @@ with(tasks) {
     }
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.apply {
+            jvmTarget = "17"
+            freeCompilerArgs = freeCompilerArgs.plus("-opt-in=kotlin.RequiresOptIn")
+        }
     }
 }

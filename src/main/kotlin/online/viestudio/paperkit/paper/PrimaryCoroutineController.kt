@@ -1,6 +1,8 @@
 package online.viestudio.paperkit.paper
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import online.viestudio.paperkit.bukkit.craftSchedulerHeartBeatMethod
 import online.viestudio.paperkit.bukkit.craftSchedulerTickField
 import online.viestudio.paperkit.plugin.KitPlugin
@@ -8,9 +10,10 @@ import org.bukkit.Server
 import java.util.concurrent.locks.LockSupport
 
 internal class PrimaryCoroutineController(
-    private val plugin: KitPlugin
+    private val plugin: KitPlugin,
 ) {
 
+    private var isEnabled: Boolean = false
     private val currentTick get() = craftSchedulerTickField.get(scheduler)
     private val craftSchedulerTickField get() = server.craftSchedulerTickField
     private val scheduler get() = server.scheduler
@@ -18,7 +21,14 @@ internal class PrimaryCoroutineController(
     private val server: Server get() = plugin.server
     private lateinit var primaryThread: Thread
 
+    fun runControlled(block: suspend CoroutineScope.() -> Unit) {
+        isEnabled = true
+        runBlocking { block() }
+        isEnabled = false
+    }
+
     fun unblockIfNeeded() {
+        if (!isEnabled) return
         if (plugin.isPrimaryThread) {
             primaryThread = Thread.currentThread()
         }

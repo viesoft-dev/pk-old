@@ -62,7 +62,7 @@ abstract class BaseKitPlugin(
         }
 
     final override fun onEnable() {
-        runBlocking {
+        coroutineController.runControlled {
             koinModulesContainer.loadModules()
             start()
         }

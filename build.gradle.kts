@@ -9,6 +9,7 @@ val kotlinxSerialization = "1.3.3"
 val koin = "3.1.6"
 val ronfy = "1.1"
 val ktorm = "3.4.1"
+val kaml = "0.44.0"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -36,6 +37,7 @@ dependencies {
     api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines)
     // Configuration
     api("com.sksamuel.hoplite", "hoplite-yaml", hoplite)
+    api("com.charleskorn.kaml", "kaml", kaml)
     // Paper
     api("io.papermc.paper", "paper-api", paper)
     // Json

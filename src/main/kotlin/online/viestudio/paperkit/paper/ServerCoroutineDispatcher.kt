@@ -5,9 +5,9 @@ import kotlinx.coroutines.Runnable
 import online.viestudio.paperkit.plugin.KitPlugin
 import kotlin.coroutines.CoroutineContext
 
-internal class PrimaryCoroutineDispatcher(
+internal class ServerCoroutineDispatcher(
     private val plugin: KitPlugin,
-    private val controller: PrimaryCoroutineController,
+    private val controller: ServerCoroutineController,
 ) : CoroutineDispatcher() {
 
     override fun isDispatchNeeded(context: CoroutineContext): Boolean {
@@ -21,6 +21,5 @@ internal class PrimaryCoroutineDispatcher(
             server.scheduler.runTask(plugin, block)
         }
     }
-
 
 }

@@ -9,7 +9,7 @@ import online.viestudio.paperkit.plugin.KitPlugin
 import org.bukkit.Server
 import java.util.concurrent.locks.LockSupport
 
-internal class PrimaryCoroutineController(
+internal class ServerCoroutineController(
     private val plugin: KitPlugin,
 ) {
 
@@ -29,7 +29,7 @@ internal class PrimaryCoroutineController(
 
     fun unblockIfNeeded() {
         if (!isEnabled) return
-        if (plugin.isPrimaryThread) {
+        if (plugin.server.isPrimaryThread) {
             primaryThread = Thread.currentThread()
         }
         if (!this::primaryThread.isInitialized) return

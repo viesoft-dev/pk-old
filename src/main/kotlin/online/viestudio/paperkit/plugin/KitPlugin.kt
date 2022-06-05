@@ -9,29 +9,57 @@ import kotlin.coroutines.CoroutineContext
 interface KitPlugin : Plugin, KoinComponent {
 
     val state: State
-    val scope: CoroutineScope
-    val context: CoroutineContext
-    val serverScope: CoroutineScope
-    val serverContext: CoroutineContext
     val log: KitLogger
-    val isPrimaryThread: Boolean
     val version: String
 
+    /**
+     * For running asynchronous tasks related to this plugin.
+     *
+     */
+    val scope: CoroutineScope
+
+    /**
+     * For running asynchronous tasks related to this plugin.
+     */
+    val context: CoroutineContext
+
+    /**
+     * For running server tasks in main thread.
+     */
+    val serverScope: CoroutineScope
+
+    /**
+     * For running server tasks in main thread.
+     */
+    val serverContext: CoroutineContext
+
+    /**
+     * Starts all plugin processes.
+     * Require plugin to be in [State.Stopped] state.
+     *
+     * @return true if started, or false if starting failed, or already is going.
+     */
     suspend fun start(): Boolean
 
+    /**
+     * Stops all plugin processes.
+     * Require plugin to be in [State.Started] state.
+     *
+     * @return true if stopped, or false if stopping already is going.
+     */
     suspend fun stop(): Boolean
 
-    suspend fun reload(): Boolean
+    /**
+     * Reloads plugin resources such as configuration.
+     * Require plugin to be in [State.Starting] or [State.Started] state.
+     *
+     * @return true if reloaded, or false if reloading failed, or plugin isn't started.
+     */
+    suspend fun reloadResources(): Boolean
 
-    enum class State {
-        Starting,
-        Started,
-        Stopping,
-        Stopped,
-    }
-
-    companion object {
-
-        const val RESOURCES_CONFIG_DIRECTORY = "config"
-    }
+    /**
+     * Represents state of plugin lifecycle.
+     * @see KitPlugin
+     */
+    enum class State { Starting, Started, Stopping, Stopped, }
 }

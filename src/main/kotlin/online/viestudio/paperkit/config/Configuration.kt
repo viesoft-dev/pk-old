@@ -42,7 +42,7 @@ class Configuration(
     /**
      * Creates [FileSource] to the path in plugin directory.
      */
-    fun file(path: String) = FileSource(path)
+    fun file(path: String) = FileSource(plugin.dataFolder.resolve(path).path)
 
     /**
      * Creates [ResourceSource] to the path.

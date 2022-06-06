@@ -5,11 +5,16 @@ import online.viestudio.paperkit.config.source.FileSource
 import online.viestudio.paperkit.config.writer.ConfigWriter
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.koin.KoinModulesContainer
+import online.viestudio.paperkit.koin.pluginQualifier
 import online.viestudio.paperkit.plugin.KitPlugin.State
 import online.viestudio.paperkit.plugin.exception.InvalidPluginStateException
 import online.viestudio.paperkit.utils.safeRunWithMeasuring
 import org.koin.core.component.get
 import org.koin.core.component.inject
+import org.koin.core.qualifier.StringQualifier
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.core.module.Module as KoinModule
 
 /**
  * Implementation of [KitPlugin] supposed to be extended.
@@ -19,12 +24,21 @@ import org.koin.core.component.inject
  */
 open class BaseKitPlugin(
     nThreads: Int = Runtime.getRuntime().availableProcessors(),
-    configuration: Configuration.() -> Unit = {},
 ) : ScopeKitPlugin(nThreads) {
 
-    private val container = KoinModulesContainer()
+    private val container by lazy { KoinModulesContainer().apply { export() } }
+    private val configuration by lazy { Configuration(this, get()).apply { configurationSettings() } }
     private val configWriter: ConfigWriter by inject()
-    private val configuration by lazy { Configuration(this, get()).apply(configuration) }
+    private val pluginModule: KoinModule by lazy {
+        module {
+            single(StringQualifier(name)) { this@BaseKitPlugin } bind KitPlugin::class
+            single(pluginQualifier) { this@BaseKitPlugin } bind KitPlugin::class
+        }
+    }
+
+    protected open fun Configuration.configurationSettings() {}
+
+    protected open fun KoinModulesContainer.export() {}
 
     final override suspend fun start(): Boolean = safeRunWithMeasuring {
         ensureStateOrThrow(State.Stopped)
@@ -101,13 +115,14 @@ open class BaseKitPlugin(
     final override suspend fun prepareToStart() {
         Global.koin.apply {
             loadModules(container.modules)
+            loadModules(listOf(pluginModule))
         }
     }
 
     final override suspend fun freeUpResources() {
         getKoin().apply {
             unloadModules(container.modules)
-            unloadModules(listOf(configuration.module))
+            unloadModules(listOf(configuration.module, pluginModule))
         }
     }
 

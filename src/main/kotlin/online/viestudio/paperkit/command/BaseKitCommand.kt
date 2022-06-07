@@ -10,6 +10,7 @@ import online.viestudio.paperkit.command.argument.Argument
 import online.viestudio.paperkit.koin.plugin
 import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.plugin.KitPlugin
+import online.viestudio.paperkit.utils.lineSeparator
 import online.viestudio.paperkit.utils.sliceStart
 import org.bukkit.command.CommandSender
 
@@ -161,7 +162,7 @@ abstract class BaseKitCommand(
         sender.message {
             content(description)
             color(theme.error)
-            appendText(System.lineSeparator())
+            appendText(lineSeparator)
             appendText {
                 color(theme.primary)
                 content(name)

@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import online.viestudio.paperkit.adventure.appendText
 import online.viestudio.paperkit.adventure.showTextOnHover
 import online.viestudio.paperkit.adventure.text
+import online.viestudio.paperkit.utils.lineSeparator
 import org.bukkit.command.CommandSender
 
 abstract class KitMainCommand(
@@ -22,12 +23,12 @@ abstract class KitMainCommand(
                 content(description)
                 color(theme.accent)
             }
-            appendText(System.lineSeparator())
+            appendText(lineSeparator)
 
             subCommands.forEachIndexed { index, subCommand ->
                 append(subCommand.help)
                 if (index != subCommands.lastIndex) {
-                    appendText(System.lineSeparator())
+                    appendText(lineSeparator)
                 }
             }
         }

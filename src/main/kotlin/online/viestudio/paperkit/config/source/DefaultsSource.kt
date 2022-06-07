@@ -5,6 +5,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
 import online.viestudio.paperkit.config.Comment
+import online.viestudio.paperkit.utils.lineSeparator
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.InputStream
 import kotlin.reflect.KClass
@@ -61,7 +62,7 @@ data class DefaultsSource(
     ) {
         val annotation = findAnnotation<Comment>()
         if (annotation != null) {
-            config.setComments(path, annotation.content.trimIndent().split(System.lineSeparator()))
+            config.setComments(path, annotation.content.trimIndent().split(lineSeparator))
         }
         val children = call(holder) ?: return
         val clazz = children::class

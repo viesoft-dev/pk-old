@@ -187,6 +187,7 @@ abstract class BaseKitCommand(
     }
 
     final override suspend fun complete(sender: CommandSender, args: Arguments): List<String> {
+        if (!sender.hasPermission(permission)) return emptyList()
         runIfSubcommandPresented(args) {
             return complete(sender, args.sliceStart(1))
         }

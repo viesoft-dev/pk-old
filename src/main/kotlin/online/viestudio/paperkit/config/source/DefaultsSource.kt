@@ -49,7 +49,7 @@ data class DefaultsSource(
         YamlConfiguration().apply { loadFromString(this@parseYamlConfiguration) }
 
     private fun YamlConfiguration.writeAnnotationComments(any: Any): String {
-        this::class.memberProperties.filter { !it.hasAnnotation<Transient>() }.forEach {
+        any::class.memberProperties.filter { !it.hasAnnotation<Transient>() }.forEach {
             it.writeAnnotationComments(path = it.path, config = this, holder = any)
         }
         return saveToString()

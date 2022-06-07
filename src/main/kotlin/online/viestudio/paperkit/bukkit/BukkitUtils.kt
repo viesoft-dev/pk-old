@@ -2,6 +2,7 @@ package online.viestudio.paperkit.bukkit
 
 import online.viestudio.paperkit.nms.nmsVersion
 import org.bukkit.Server
+import org.bukkit.entity.Player
 
 internal val Server.craftSchedulerTickField
     get() = craftSchedulerClazz.getDeclaredField("currentTick").apply {
@@ -18,6 +19,8 @@ internal val Server.craftSchedulerClazz
         )
     )
 
-fun Server.syncCommands() {
+internal fun Server.syncCommands() {
     this::class.java.getMethod("syncCommands").invoke(this)
 }
+
+inline fun Server.onlinePlayers(action: (Player) -> Unit) = onlinePlayers.forEach(action)

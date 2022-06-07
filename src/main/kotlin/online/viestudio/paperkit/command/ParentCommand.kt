@@ -17,8 +17,8 @@ abstract class ParentCommand(
 
     override val help: Component by lazy {
         text {
-            content("> /$name")
-            color(theme.primary)
+            content("——> /$name")
+            color(theme.accent)
             showTextOnHover {
                 content(description)
                 color(theme.accent)

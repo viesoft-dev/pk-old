@@ -1,23 +1,28 @@
 package online.viestudio.paperkit.plugin
 
 import online.viestudio.paperkit.bukkit.syncCommands
+import online.viestudio.paperkit.collections.concurrentSetOf
 import online.viestudio.paperkit.command.CommandsDeclaration
 import online.viestudio.paperkit.command.KitCommand
 import online.viestudio.paperkit.command.KitCommandAdapter
 import online.viestudio.paperkit.command.adapter
 import online.viestudio.paperkit.config.ConfigurationDeclaration
+import online.viestudio.paperkit.config.loader.ConfigLoader
+import online.viestudio.paperkit.config.loader.HopliteConfigLoader
 import online.viestudio.paperkit.config.source.FileSource
 import online.viestudio.paperkit.config.writer.ConfigWriter
+import online.viestudio.paperkit.config.writer.SnakeYamlConfigWriter
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.koin.KoinModulesContainer
 import online.viestudio.paperkit.koin.config
 import online.viestudio.paperkit.koin.pluginQualifier
+import online.viestudio.paperkit.listener.KitListener
+import online.viestudio.paperkit.listener.register
+import online.viestudio.paperkit.listener.unregister
 import online.viestudio.paperkit.plugin.KitPlugin.State
 import online.viestudio.paperkit.plugin.exception.InvalidPluginStateException
 import online.viestudio.paperkit.theme.Theme
 import online.viestudio.paperkit.utils.safeRunWithMeasuring
-import org.koin.core.component.get
-import org.koin.core.component.inject
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -36,15 +41,14 @@ open class BaseKitPlugin(
     final override val theme: Theme by config()
     private val container by lazy { KoinModulesContainer().apply { export() } }
     private val configurationDeclaration by lazy {
-        ConfigurationDeclaration(
-            this,
-            get()
-        ).apply { declareConfiguration() }
+        ConfigurationDeclaration(this, configLoader).apply { declareConfiguration() }
     }
     private val commandsDeclaration by lazy {
         CommandsDeclaration().apply { declareCommands() }
     }
-    private val configWriter: ConfigWriter by inject()
+    private val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
+    private val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
+    private val bindedListeners: MutableSet<KitListener> = concurrentSetOf()
     private val pluginModule: KoinModule by lazy {
         module {
             single(StringQualifier(name)) { this@BaseKitPlugin } bind KitPlugin::class
@@ -62,6 +66,7 @@ open class BaseKitPlugin(
         ensureStateOrThrow(State.Stopped)
         state = State.Starting
         reloadResources()
+        registerListeners()
         registerCommands()
         onStart()
     }.onSuccess {
@@ -71,6 +76,10 @@ open class BaseKitPlugin(
         state = State.Stopped
         log.w(it) { "Plugin starting failed." }
     }.isSuccess
+
+    private fun registerListeners() {
+        bindedListeners.forEach(KitListener::register)
+    }
 
     private suspend fun registerCommands() {
         commandsDeclaration.commands.forEach { registerCommand(it) }
@@ -97,6 +106,7 @@ open class BaseKitPlugin(
     final override suspend fun stop(): Boolean = safeRunWithMeasuring {
         ensureStateOrThrow(State.Started)
         state = State.Stopping
+        unregisterListeners()
         unregisterCommands()
         onStop()
     }.onSuccess {
@@ -106,6 +116,10 @@ open class BaseKitPlugin(
         state = State.Stopped
         log.w(it) { "Plugin stopping failed." }
     }.isSuccess
+
+    private fun unregisterListeners() {
+        bindedListeners.forEach(KitListener::unregister)
+    }
 
     private fun unregisterCommands() {
         commandsDeclaration.commands.forEach(this::unregisterCommand)
@@ -169,7 +183,9 @@ open class BaseKitPlugin(
             loadModules(listOf(pluginModule))
         }
         configurationDeclaration.apply {
-            Theme::class loadFrom (file("theme.yml") or resource("theme.yml") or defaults(Theme::class))
+            val themeSources = file("theme.yml") or resource("theme.yml") or defaults(Theme::class)
+            Theme::class loadFrom themeSources
+            loader.addPlaceholderSources(themeSources)
         }
     }
 
@@ -178,6 +194,11 @@ open class BaseKitPlugin(
             unloadModules(container.modules)
             unloadModules(listOf(configurationDeclaration.module, pluginModule))
         }
+    }
+
+    final override suspend fun bindListener(listener: KitListener) {
+        bindedListeners.add(listener)
+        if (state == State.Started) listener.register()
     }
 
     private fun ensureStateOrThrow(vararg expectedStates: State) {

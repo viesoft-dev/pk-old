@@ -13,12 +13,22 @@ internal class HopliteConfigLoader(
     private val builder
         get() = ConfigLoaderBuilder.empty()
             .withClassLoader(this::class.java.classLoader)
+            .addProperties()
             .addDefaults()
 
-    override fun <T : Any> load(clazz: KClass<T>, vararg sources: Source): Result<T> = runCatching {
+    private fun ConfigLoaderBuilder.addProperties(): ConfigLoaderBuilder {
+        placeholderSources.forEach { sources ->
+            sources.forEach { source ->
+                source.inputStream()?.also { addStreamSource(it, extension) }
+            }
+        }
+        return this
+    }
+
+    override fun <T : Any> load(clazz: KClass<T>, sources: List<Source>): Result<T> = runCatching {
         val builder = builder
         var validSources = 0
-        sources.apply { reverse() }.forEach { source ->
+        sources.reversed().forEach { source ->
             source.inputStream()?.also {
                 validSources++
                 builder.addStreamSource(it, extension)

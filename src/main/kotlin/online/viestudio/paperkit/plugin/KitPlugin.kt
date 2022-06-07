@@ -1,6 +1,7 @@
 package online.viestudio.paperkit.plugin
 
 import kotlinx.coroutines.CoroutineScope
+import online.viestudio.paperkit.listener.KitListener
 import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.theme.Theme
 import org.bukkit.plugin.Plugin
@@ -58,6 +59,11 @@ interface KitPlugin : Plugin, KoinComponent {
      * @return true if reloaded, or false if reloading failed, or plugin isn't started.
      */
     suspend fun reloadResources(): Boolean
+
+    /**
+     * Bind [KitListener] (un)registration to [KitPlugin] lifecycle.
+     */
+    suspend fun bindListener(listener: KitListener)
 
     /**
      * Represents state of plugin lifecycle.

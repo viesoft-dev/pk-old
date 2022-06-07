@@ -6,8 +6,8 @@ import kotlin.reflect.KClass
 internal class ConfigProviderImpl<T : Any>(
     private val configLoader: ConfigLoader,
     private val clazz: KClass<T>,
-    private val source: Array<out Source>,
+    private val source: List<Source>,
 ) : ConfigProvider<T> {
 
-    override fun provide(): T = configLoader.loadOrThrow(clazz, *source)
+    override fun provide(): T = configLoader.loadOrThrow(clazz, source)
 }

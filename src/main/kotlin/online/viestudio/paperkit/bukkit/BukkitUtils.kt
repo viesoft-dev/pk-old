@@ -3,6 +3,10 @@ package online.viestudio.paperkit.bukkit
 import online.viestudio.paperkit.nms.nmsVersion
 import org.bukkit.Server
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
+import org.bukkit.event.HandlerList
+import org.bukkit.plugin.PluginManager
+import org.bukkit.plugin.SimplePluginManager
 
 internal val Server.craftSchedulerTickField
     get() = craftSchedulerClazz.getDeclaredField("currentTick").apply {
@@ -18,6 +22,13 @@ internal val Server.craftSchedulerClazz
             nmsVersion
         )
     )
+
+internal fun PluginManager.getHandlerListFor(event: Class<out Event>): HandlerList {
+    val method = SimplePluginManager::class.java.getDeclaredMethod("getEventListeners", Class::class.java).apply {
+        isAccessible = true
+    }
+    return method(this, event) as HandlerList
+}
 
 internal fun Server.syncCommands() {
     this::class.java.getMethod("syncCommands").invoke(this)

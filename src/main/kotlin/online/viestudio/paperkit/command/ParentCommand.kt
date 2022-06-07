@@ -7,7 +7,7 @@ import online.viestudio.paperkit.adventure.text
 import online.viestudio.paperkit.utils.lineSeparator
 import org.bukkit.command.CommandSender
 
-abstract class KitMainCommand(
+abstract class ParentCommand(
     override val name: String,
     override val aliases: List<String> = emptyList(),
     override val description: String,

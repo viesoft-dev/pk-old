@@ -6,12 +6,12 @@ import kotlinx.coroutines.withContext
 import online.viestudio.paperkit.adventure.message
 import online.viestudio.paperkit.adventure.showTextOnHover
 import online.viestudio.paperkit.command.Arguments
-import online.viestudio.paperkit.command.BaseKitCommand
+import online.viestudio.paperkit.command.ChildCommand
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.plugin.KitPlugin
 import org.bukkit.command.CommandSender
 
-class ReloadCommand : BaseKitCommand(
+class ReloadCommand : ChildCommand(
     name = "reload",
     description = "Reloads plugin or all if no plugin is specified.",
     permission = "paper-kit.reload",

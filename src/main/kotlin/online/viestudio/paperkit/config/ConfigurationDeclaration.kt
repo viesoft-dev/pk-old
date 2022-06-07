@@ -10,13 +10,13 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import kotlin.reflect.KClass
 
-class Configuration(
+class ConfigurationDeclaration(
     private val plugin: KitPlugin,
     val loader: ConfigLoader,
 ) {
 
     val module: Module = module {}
-    val map: Map<KClass<*>, List<Source>> = HashMap()
+    val map: MutableMap<KClass<*>, List<Source>> = HashMap()
 
     /**
      * Register config [T] for loading from source [source] if valid.
@@ -36,7 +36,7 @@ class Configuration(
     inline infix fun <reified T : Any> KClass<T>.loadFrom(sources: List<Source>) {
         val provider = loader.provider(this, *sources.toTypedArray())
         module.single(createdAtStart = true) { provider.provide() }
-        (map as MutableMap)[this] = sources
+        map[this] = sources
     }
 
     /**

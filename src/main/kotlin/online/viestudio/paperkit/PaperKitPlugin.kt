@@ -1,5 +1,7 @@
 package online.viestudio.paperkit
 
+import online.viestudio.paperkit.command.CommandsDeclaration
+import online.viestudio.paperkit.command.kit.PaperKitCommand
 import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.plugin.BaseKitPlugin
 
@@ -21,5 +23,9 @@ class PaperKitPlugin : BaseKitPlugin() {
              GitHub: https://github.com/paper-kit/paper-kit/
              Version: $version
         """
+    }
+
+    override fun CommandsDeclaration.declareCommands() {
+        register(PaperKitCommand())
     }
 }

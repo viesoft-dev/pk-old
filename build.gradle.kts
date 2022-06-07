@@ -10,6 +10,7 @@ val koin = "3.1.6"
 val ronfy = "1.1"
 val ktorm = "3.4.1"
 val kaml = "0.44.0"
+val miniMessage = "4.11.0"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -40,6 +41,7 @@ dependencies {
     api("com.charleskorn.kaml", "kaml", kaml)
     // Paper
     api("io.papermc.paper", "paper-api", paper)
+    api("net.kyori", "adventure-text-minimessage", miniMessage)
     // Json
     api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerialization)
     // Dependency injection

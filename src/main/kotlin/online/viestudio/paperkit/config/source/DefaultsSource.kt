@@ -2,6 +2,8 @@ package online.viestudio.paperkit.config.source
 
 import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Transient
 import online.viestudio.paperkit.config.Comment
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.InputStream
@@ -19,26 +21,28 @@ data class DefaultsSource(
 ) : Source {
 
     private val content: String? by lazy { clazz.createDefaultOrNull()?.encodeToStringOrNull() }
+    private val KProperty1<out Any, *>.path: String get() = findAnnotation<SerialName>()?.value ?: name
 
     override fun inputStream(): InputStream? = content?.byteInputStream()
 
     private fun Any.mergeCommentsInto(configStr: String): String {
         val config = YamlConfiguration().apply { loadFromString(configStr) }
-        this::class.memberProperties.forEach {
-            it.mergeCommentsInto(path = it.name, config = config, holder = this)
+        this::class.memberProperties.filter { !it.hasAnnotation<Transient>() }.forEach {
+            it.mergeCommentsInto(path = it.path, config = config, holder = this)
         }
         return config.saveToString()
     }
 
     private fun KProperty1<out Any, *>.mergeCommentsInto(path: String, holder: Any, config: YamlConfiguration) {
-        annotations.filterIsInstance(Comment::class.java).lastOrNull()?.also {
-            config.setComments(path, it.content.trimIndent().split(System.lineSeparator()))
+        val annotation = findAnnotation<Comment>()
+        if (annotation != null) {
+            config.setComments(path, annotation.content.trimIndent().split(System.lineSeparator()))
         }
         val children = call(holder) ?: return
         val clazz = children::class
         if (!clazz.isData) return
         children::class.memberProperties.forEach {
-            it.mergeCommentsInto(path = "${path}.${it.name}", config = config, holder = children)
+            it.mergeCommentsInto(path = "${path}.${it.path}", config = config, holder = children)
         }
     }
 

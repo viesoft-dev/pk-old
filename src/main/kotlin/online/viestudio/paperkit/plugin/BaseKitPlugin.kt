@@ -1,13 +1,20 @@
 package online.viestudio.paperkit.plugin
 
-import online.viestudio.paperkit.config.Configuration
+import online.viestudio.paperkit.bukkit.syncCommands
+import online.viestudio.paperkit.command.CommandsDeclaration
+import online.viestudio.paperkit.command.KitCommand
+import online.viestudio.paperkit.command.KitCommandAdapter
+import online.viestudio.paperkit.command.adapter
+import online.viestudio.paperkit.config.ConfigurationDeclaration
 import online.viestudio.paperkit.config.source.FileSource
 import online.viestudio.paperkit.config.writer.ConfigWriter
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.koin.KoinModulesContainer
+import online.viestudio.paperkit.koin.config
 import online.viestudio.paperkit.koin.pluginQualifier
 import online.viestudio.paperkit.plugin.KitPlugin.State
 import online.viestudio.paperkit.plugin.exception.InvalidPluginStateException
+import online.viestudio.paperkit.theme.Theme
 import online.viestudio.paperkit.utils.safeRunWithMeasuring
 import org.koin.core.component.get
 import org.koin.core.component.inject
@@ -26,8 +33,17 @@ open class BaseKitPlugin(
     nThreads: Int = Runtime.getRuntime().availableProcessors(),
 ) : ScopeKitPlugin(nThreads) {
 
+    final override val theme: Theme by config()
     private val container by lazy { KoinModulesContainer().apply { export() } }
-    private val configuration by lazy { Configuration(this, get()).apply { configurationSettings() } }
+    private val configurationDeclaration by lazy {
+        ConfigurationDeclaration(
+            this,
+            get()
+        ).apply { declareConfiguration() }
+    }
+    private val commandsDeclaration by lazy {
+        CommandsDeclaration().apply { declareCommands() }
+    }
     private val configWriter: ConfigWriter by inject()
     private val pluginModule: KoinModule by lazy {
         module {
@@ -36,7 +52,9 @@ open class BaseKitPlugin(
         }
     }
 
-    protected open fun Configuration.configurationSettings() {}
+    protected open fun CommandsDeclaration.declareCommands() {}
+
+    protected open fun ConfigurationDeclaration.declareConfiguration() {}
 
     protected open fun KoinModulesContainer.export() {}
 
@@ -44,6 +62,7 @@ open class BaseKitPlugin(
         ensureStateOrThrow(State.Stopped)
         state = State.Starting
         reloadResources()
+        registerCommands()
         onStart()
     }.onSuccess {
         state = State.Started
@@ -52,6 +71,20 @@ open class BaseKitPlugin(
         state = State.Stopped
         log.w(it) { "Plugin starting failed." }
     }.isSuccess
+
+    private suspend fun registerCommands() {
+        commandsDeclaration.commands.forEach { registerCommand(it) }
+        server.syncCommands()
+    }
+
+    private suspend fun registerCommand(command: KitCommand) {
+        command.ensureInit()
+        val adapter = command.adapter()
+        val commandMap = server.commandMap
+        if (!commandMap.register(name, adapter)) {
+            log.w { "Command ${command.name} wasn't registered." }
+        }
+    }
 
     /**
      * Invoked when plugin is starting.
@@ -64,6 +97,7 @@ open class BaseKitPlugin(
     final override suspend fun stop(): Boolean = safeRunWithMeasuring {
         ensureStateOrThrow(State.Started)
         state = State.Stopping
+        unregisterCommands()
         onStop()
     }.onSuccess {
         state = State.Stopped
@@ -72,6 +106,23 @@ open class BaseKitPlugin(
         state = State.Stopped
         log.w(it) { "Plugin stopping failed." }
     }.isSuccess
+
+    private fun unregisterCommands() {
+        commandsDeclaration.commands.forEach(this::unregisterCommand)
+        server.syncCommands()
+    }
+
+    private fun unregisterCommand(kitCommand: KitCommand) {
+        server.commandMap.knownCommands.apply {
+            filter {
+                val possiblyAdapter = it.value
+                possiblyAdapter is KitCommandAdapter && possiblyAdapter.isAdapterOf(kitCommand)
+            }.forEach {
+                remove(it.key)
+                server.commandAliases.remove(it.key)
+            }
+        }
+    }
 
     /**
      * Invoked when plugin is stopping.
@@ -84,8 +135,8 @@ open class BaseKitPlugin(
     final override suspend fun reloadResources(): Boolean = safeRunWithMeasuring {
         ensureStateOrThrow(State.Starting, State.Started)
         getKoin().apply {
-            unloadModules(listOf(configuration.module))
-            loadModules(listOf(configuration.module))
+            unloadModules(listOf(configurationDeclaration.module))
+            loadModules(listOf(configurationDeclaration.module))
         }
         writeConfig()
         onReloadResources()
@@ -96,7 +147,7 @@ open class BaseKitPlugin(
     }.isSuccess
 
     private fun writeConfig() {
-        configuration.map.filter { (_, sources) ->
+        configurationDeclaration.map.filter { (_, sources) ->
             sources.firstOrNull() is FileSource && sources.size > 1
         }.forEach { (_, sources) ->
             val target = sources.first() as FileSource
@@ -117,12 +168,15 @@ open class BaseKitPlugin(
             loadModules(container.modules)
             loadModules(listOf(pluginModule))
         }
+        configurationDeclaration.apply {
+            Theme::class loadFrom (file("theme.yml") or resource("theme.yml") or defaults(Theme::class))
+        }
     }
 
     final override suspend fun freeUpResources() {
         getKoin().apply {
             unloadModules(container.modules)
-            unloadModules(listOf(configuration.module, pluginModule))
+            unloadModules(listOf(configurationDeclaration.module, pluginModule))
         }
     }
 

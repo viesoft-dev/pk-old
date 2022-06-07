@@ -18,7 +18,7 @@ internal class HopliteConfigLoader(
     override fun <T : Any> load(clazz: KClass<T>, vararg sources: Source): Result<T> = runCatching {
         val builder = builder
         var validSources = 0
-        sources.forEach { source ->
+        sources.apply { reverse() }.forEach { source ->
             source.inputStream()?.also {
                 validSources++
                 builder.addStreamSource(it, extension)

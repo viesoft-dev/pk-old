@@ -18,3 +18,6 @@ internal val Server.craftSchedulerClazz
         )
     )
 
+fun Server.syncCommands() {
+    this::class.java.getMethod("syncCommands").invoke(this)
+}

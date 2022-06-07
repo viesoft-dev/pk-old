@@ -9,3 +9,5 @@ inline fun safeRunWithMeasuring(block: () -> Unit): Result<Long> {
     }
     return result.map { millis }
 }
+
+fun <T : Any> Array<T>.sliceStart(count: Int): Array<T> = sliceArray(count..lastIndex)

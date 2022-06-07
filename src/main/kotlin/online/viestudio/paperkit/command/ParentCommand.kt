@@ -17,8 +17,11 @@ abstract class ParentCommand(
 
     override val help: Component by lazy {
         text {
-            content("➼ ${name.lowercase()}")
-            color(theme.accent)
+            append(theme.prefix)
+            appendText {
+                content(" ${name.replaceFirstChar { it.uppercase() }}")
+                color(theme.accent)
+            }
             showTextOnHover {
                 content(description)
                 color(theme.accent)

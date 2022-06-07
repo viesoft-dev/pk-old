@@ -2,12 +2,20 @@ package online.viestudio.paperkit.theme
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.minimessage.MiniMessage
 import online.viestudio.paperkit.adventure.hexColor
 import online.viestudio.paperkit.config.Comment
 
 @Serializable
 data class Theme(
+    @Comment(
+        """
+            The prefix of this plugin that appears in messages.
+        """
+    )
+    val pluginPrefix: String = "<{{primaryHex}}>[<{{accentHex}}>PaperKit<{{primaryHex}}>]",
     @Comment(
         """
            The primary color used in the plugin for the most part of common text.
@@ -45,6 +53,9 @@ data class Theme(
     )
     val errorHex: String = DEFAULT_ERROR_HEX,
 ) {
+
+    @Transient
+    val prefix: Component = MiniMessage.miniMessage().deserialize(pluginPrefix)
 
     @Transient
     val primary: TextColor = hexColor(primaryHex) ?: hexColor(DEFAULT_PRIMARY_HEX)!!

@@ -102,7 +102,7 @@ code. To do that, just override `declareCommands` method in your plugin class.
 
 ```kotlin
 override fun CommandsDeclaration.declareCommands() {
-    register(PaperKitCommand())
+    register { PaperKitCommand() }
 }
 ```
 

@@ -53,7 +53,7 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "viestudio.online"
+            groupId = "online.viestudio"
             artifactId = "paper-kit"
             version = version
 
@@ -81,7 +81,7 @@ with(tasks) {
     }
 
     shadowJar {
-        archiveFileName.set("${project.name}-${project.version}.jar")
+        archiveFileName.set("full-${project.name}-${project.version}.jar")
 
         fun ResolvedDependency.containsOrParents(content: String): Boolean {
             return name.contains(content) || parents.find { it.containsOrParents(content) } != null

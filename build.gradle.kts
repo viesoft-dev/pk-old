@@ -25,7 +25,7 @@ plugins {
 }
 
 group = "online.viestudio"
-version = "1.0.6-dev"
+version = "1.1.0-dev"
 
 repositories {
     mavenCentral()
@@ -81,7 +81,7 @@ with(tasks) {
     }
 
     shadowJar {
-        archiveFileName.set("${project.name}-${project.version}.jar")
+        archiveFileName.set("${project.name}-${project.version}-framework.jar")
 
         fun ResolvedDependency.containsOrParents(content: String): Boolean {
             return name.contains(content) || parents.find { it.containsOrParents(content) } != null

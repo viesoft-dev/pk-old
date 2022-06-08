@@ -16,18 +16,16 @@ import online.viestudio.paperkit.util.sliceStart
 import org.bukkit.command.CommandSender
 
 abstract class BaseKitCommand(
-    override val name: String = "",
+    override val name: String,
     override val aliases: List<String> = emptyList(),
     override val description: String = "",
-    override val permission: String = "",
+    override val permission: String = "$name.execute",
     override val subCommands: List<KitCommand> = emptyList(),
-    minArguments: Int? = null,
-    maxArguments: Int? = null,
 ) : KitCommand {
 
-    final override val minArguments: Int by lazy { minArguments ?: declaredArguments.filter { it.isRequired }.size }
-    final override val maxArguments: Int by lazy { maxArguments ?: declaredArguments.size }
     final override val declaredArguments: List<Argument> by lazy { ArgumentsDeclaration().apply { declareArguments() }.arguments }
+    override val minArguments: Int by lazy { declaredArguments.count { it.isRequired } }
+    override val maxArguments: Int = -1
     override val theme by config<Theme>()
     override val help: Component by lazy { buildBeautifulHelp() }
     protected val plugin: KitPlugin by plugin()

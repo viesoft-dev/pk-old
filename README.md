@@ -199,7 +199,9 @@ override fun KoinModulesContainer.export() {
 For further information about dependency injection you may check out
 the [Koin Documentation](https://insert-koin.io/docs/reference/introduction).
 
-## How to use?
+## How to start?
+
+There's a [template](https://github.com/paper-kit/template-paper-kit) to start a new project.
 
 PaperKit is publishing into JitPack repository.
 Add the dependency below into your build.gradle file to interact with PaperKit api.
@@ -209,13 +211,24 @@ Do not include PaperKit api in your plugin, as well, as the Kotlin stdlib.
 #### Gradle
 
 ```kotlin
+plugins {
+    kotlin("plugin.serialization") version "1.6.21"
+}
+
 repositories {
     maven("https://jitpack.io")
+    maven("https://papermc.io/repo/repository/maven-public/") // PaperApi is included into PaperKit dependency
 }
 
 dependencies {
     compileOnly("com.github.paper-kit", "paper-kit", "latest-version")
     // PaperKit provides all kotlin stuff.
     compileOnly(kotlin("stdlib"))
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.apply {
+        jvmTarget = "17"
+    }
 }
 ```

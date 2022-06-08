@@ -35,7 +35,12 @@ internal class SnakeYamlConfigWriter : BaseConfigWriter() {
     override fun write(target: FileSource, vararg sources: Source) {
         val inputStream =
             sources.firstValidOrNull() ?: throw NoValidSourceException(sources.toList(), target, "writing")
-        inputStream.use { target.file.writeBytes(it.readAllBytes()) }
+        inputStream.use {
+            target.file.apply {
+                parentFile.apply { mkdirs() }
+                writeBytes(it.readAllBytes())
+            }
+        }
     }
 
     private fun Array<out Source>.firstValidOrNull(): InputStream? {

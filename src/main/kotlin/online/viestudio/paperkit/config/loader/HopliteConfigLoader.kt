@@ -15,7 +15,6 @@ internal class HopliteConfigLoader(
             .withClassLoader(this::class.java.classLoader)
             .addProperties()
             .addDefaults()
-            .report()
 
     private fun ConfigLoaderBuilder.addProperties(): ConfigLoaderBuilder {
         placeholderSources.forEach { sources ->

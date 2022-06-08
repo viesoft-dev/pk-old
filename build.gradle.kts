@@ -26,7 +26,7 @@ plugins {
 }
 
 group = "online.viestudio"
-version = "1.3.0-dev"
+version = "1.1.0-dev"
 
 repositories {
     mavenCentral()

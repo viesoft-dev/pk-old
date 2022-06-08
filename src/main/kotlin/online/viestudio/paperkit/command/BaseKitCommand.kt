@@ -25,7 +25,6 @@ abstract class BaseKitCommand(
 
     final override val declaredArguments: List<Argument> by lazy { ArgumentsDeclaration().apply { declareArguments() }.arguments }
     override val minArguments: Int by lazy { declaredArguments.count { it.isRequired } }
-    override val maxArguments: Int = -1
     override val theme by config<Theme>()
     override val help: Component by lazy { buildBeautifulHelp() }
     protected val plugin: KitPlugin by plugin()
@@ -34,7 +33,6 @@ abstract class BaseKitCommand(
 
     final override suspend fun ensureInit() {
         minArguments
-        maxArguments
         declaredArguments
         plugin
         help
@@ -110,7 +108,7 @@ abstract class BaseKitCommand(
     }
 
     private suspend fun verifyArguments(sender: CommandSender, args: Arguments): Boolean {
-        if (args.size < minArguments || args.size > maxArguments) {
+        if (args.size < minArguments) {
             sender.sendHelp()
             return false
         }

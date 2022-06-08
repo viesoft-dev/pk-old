@@ -27,7 +27,6 @@ interface KitCommand : KoinComponent {
     val help: Component
     val declaredArguments: List<Argument>
     val minArguments: Int
-    val maxArguments: Int
     val subCommands: List<KitCommand>
 
     suspend fun ensureInit()

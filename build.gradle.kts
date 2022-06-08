@@ -52,7 +52,7 @@ dependencies {
 
 publishing {
     repositories {
-        maven("https://maven.pkg.github.com/paper-kit/paper-kit") {
+        maven("https://maven.pkg.github.com/paper-kit/") {
             name = "GitHubPackages"
             credentials {
                 username = System.getenv("GITHUB_ACTOR")

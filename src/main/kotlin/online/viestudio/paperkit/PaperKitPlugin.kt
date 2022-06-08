@@ -26,6 +26,6 @@ class PaperKitPlugin : BaseKitPlugin() {
     }
 
     override fun CommandsDeclaration.declareCommands() {
-        register(PaperKitCommand())
+        register { PaperKitCommand() }
     }
 }

@@ -6,20 +6,20 @@ import online.viestudio.paperkit.adventure.text
 import online.viestudio.paperkit.command.KitCommand
 
 fun KitCommand.buildBeautifulHelp() = text {
-    color(theme.primary)
+    color(appearance.primary)
     content(name)
     showTextOnHover {
-        color(theme.accent)
+        color(appearance.accent)
         content(description)
     }
     declaredArguments.forEach {
         val notation = if (it.isRequired) "" else "?"
 
         appendText {
-            color(theme.accent)
+            color(appearance.accent)
             content(" <$notation${it.name}>")
             showTextOnHover {
-                color(theme.accent)
+                color(appearance.accent)
                 content(it.description)
             }
         }

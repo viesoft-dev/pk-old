@@ -8,7 +8,7 @@ import java.io.InputStream
 
 internal class SnakeYamlConfigWriter : BaseConfigWriter() {
 
-    override fun merge(target: FileSource, vararg sources: Source) {
+    override fun merge(target: FileSource, sources: List<Source>) {
         val inputStream =
             sources.firstValidOrNull() ?: throw NoValidSourceException(sources.toList(), target, "merging")
         inputStream.use {
@@ -32,7 +32,7 @@ internal class SnakeYamlConfigWriter : BaseConfigWriter() {
         return to
     }
 
-    override fun write(target: FileSource, vararg sources: Source) {
+    override fun write(target: FileSource, sources: List<Source>) {
         val inputStream =
             sources.firstValidOrNull() ?: throw NoValidSourceException(sources.toList(), target, "writing")
         inputStream.use {
@@ -43,7 +43,7 @@ internal class SnakeYamlConfigWriter : BaseConfigWriter() {
         }
     }
 
-    private fun Array<out Source>.firstValidOrNull(): InputStream? {
+    private fun List<Source>.firstValidOrNull(): InputStream? {
         for (source in this) {
             source.inputStream()?.also { return it }
         }

@@ -9,19 +9,20 @@ import online.viestudio.paperkit.command.adapter
 import online.viestudio.paperkit.config.ConfigurationDeclaration
 import online.viestudio.paperkit.config.loader.ConfigLoader
 import online.viestudio.paperkit.config.loader.HopliteConfigLoader
+import online.viestudio.paperkit.config.source.DefaultsSource
 import online.viestudio.paperkit.config.source.FileSource
+import online.viestudio.paperkit.config.source.ResourceSource
 import online.viestudio.paperkit.config.writer.ConfigWriter
 import online.viestudio.paperkit.config.writer.SnakeYamlConfigWriter
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.koin.KoinModulesContainer
-import online.viestudio.paperkit.koin.config
 import online.viestudio.paperkit.koin.pluginQualifier
 import online.viestudio.paperkit.listener.KitListener
 import online.viestudio.paperkit.listener.register
 import online.viestudio.paperkit.listener.unregister
 import online.viestudio.paperkit.plugin.KitPlugin.State
 import online.viestudio.paperkit.plugin.exception.InvalidPluginStateException
-import online.viestudio.paperkit.theme.Theme
+import online.viestudio.paperkit.theme.Appearance
 import online.viestudio.paperkit.util.safeRunWithMeasuring
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.bind
@@ -38,7 +39,7 @@ abstract class BaseKitPlugin(
     nThreads: Int = Runtime.getRuntime().availableProcessors(),
 ) : ScopeKitPlugin(nThreads) {
 
-    final override val theme: Theme by config()
+    final override lateinit var appearance: Appearance
     private val container by lazy { KoinModulesContainer().apply { export() } }
     private val configurationDeclaration by lazy {
         ConfigurationDeclaration(this, configLoader).apply { declareConfiguration() }
@@ -50,6 +51,13 @@ abstract class BaseKitPlugin(
     private val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
     private val bindedListeners: MutableSet<KitListener> = concurrentSetOf()
     private val qualifier get() = pluginQualifier
+    private val appearanceSources by lazy {
+        listOf(
+            FileSource(dataFolder.resolve("appearance.yml").path),
+            ResourceSource(this, "appearance.yml"),
+            DefaultsSource(Appearance::class)
+        )
+    }
     private val pluginModule: KoinModule by lazy {
         module {
             single(StringQualifier(name)) { this@BaseKitPlugin } bind KitPlugin::class
@@ -151,11 +159,12 @@ abstract class BaseKitPlugin(
 
     final override suspend fun reloadResources(): Boolean = safeRunWithMeasuring {
         ensureStateOrThrow(State.Starting, State.Started)
+        writeConfig()
+        reloadAppearance()
         getKoin().apply {
             unloadModules(listOf(configurationDeclaration.module))
             loadModules(listOf(configurationDeclaration.module))
         }
-        writeConfig()
         onReloadResources()
     }.onSuccess {
         log.d { "Resources loaded in $it millis." }
@@ -163,13 +172,25 @@ abstract class BaseKitPlugin(
         log.w(it) { "Loading resources failed." }
     }.isSuccess
 
+    private fun reloadAppearance() {
+        appearance = configLoader.loadOrThrow(Appearance::class, appearanceSources)
+    }
+
     private fun writeConfig() {
+        writeAppearance()
         configurationDeclaration.map.filter { (_, sources) ->
             sources.firstOrNull() is FileSource && sources.size > 1
         }.forEach { (_, sources) ->
             val target = sources.first() as FileSource
             configWriter.writeOrMergeIfExists(target, *sources.toTypedArray().copyOfRange(1, sources.size))
         }
+    }
+
+    private fun writeAppearance() {
+        configWriter.writeOrMergeIfExists(
+            appearanceSources.first() as FileSource,
+            appearanceSources.subList(1, appearanceSources.size)
+        )
     }
 
     /**
@@ -185,10 +206,8 @@ abstract class BaseKitPlugin(
             loadModules(container.modules)
             loadModules(listOf(pluginModule))
         }
-        configurationDeclaration.apply {
-            val themeSources = file("theme.yml") or resource("theme.yml") or defaults(Theme::class)
-            Theme::class loadFrom themeSources
-            loader.addPlaceholderSources(themeSources)
+        configLoader.apply {
+            addPlaceholderSources(appearanceSources)
         }
     }
 

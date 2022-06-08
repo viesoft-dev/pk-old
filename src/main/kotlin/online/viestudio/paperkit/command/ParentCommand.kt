@@ -25,14 +25,14 @@ abstract class ParentCommand(
 
     override val help: Component
         get() = text {
-            append(theme.prefix)
+            append(appearance.prefix)
             appendText {
                 content(" ${name.replaceFirstChar { it.uppercase() }}")
-                color(theme.accent)
+                color(appearance.accent)
             }
             showTextOnHover {
                 content(description)
-                color(theme.accent)
+                color(appearance.accent)
             }
             appendText(lineSeparator)
 

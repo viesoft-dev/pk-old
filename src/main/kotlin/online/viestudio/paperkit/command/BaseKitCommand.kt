@@ -5,12 +5,10 @@ import net.kyori.adventure.text.format.TextColor
 import online.viestudio.paperkit.adventure.appendText
 import online.viestudio.paperkit.adventure.message
 import online.viestudio.paperkit.command.argument.Argument
-import online.viestudio.paperkit.koin.config
 import online.viestudio.paperkit.koin.plugin
 import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.plugin.KitPlugin
 import online.viestudio.paperkit.style.buildBeautifulHelp
-import online.viestudio.paperkit.theme.Theme
 import online.viestudio.paperkit.util.lineSeparator
 import online.viestudio.paperkit.util.sliceStart
 import org.bukkit.command.CommandSender
@@ -25,7 +23,7 @@ abstract class BaseKitCommand(
 
     final override val declaredArguments: List<Argument> by lazy { ArgumentsDeclaration().apply { declareArguments() }.arguments }
     override val minArguments: Int by lazy { declaredArguments.count { it.isRequired } }
-    override val theme by config<Theme>()
+    override val appearance get() = plugin.appearance
     override val help: Component get() = buildBeautifulHelp()
     protected val plugin: KitPlugin by plugin()
     protected val log get() = plugin.log
@@ -70,7 +68,7 @@ abstract class BaseKitCommand(
                     Be careful, administration are watching for you!
                 """.trimIndent()
             )
-            color(theme.error)
+            color(appearance.error)
         }
         return false
     }
@@ -83,7 +81,7 @@ abstract class BaseKitCommand(
                     Please, contact the server administrator to resolve the problem.
                 """.trimIndent()
             )
-            color(theme.error)
+            color(appearance.error)
         }
         log.logProblem(sender, args, e)
     }
@@ -136,10 +134,10 @@ abstract class BaseKitCommand(
     ) {
         sender.message {
             content(description)
-            color(theme.error)
+            color(appearance.error)
             appendText(lineSeparator)
             appendText {
-                color(theme.primary)
+                color(appearance.primary)
                 content(name)
             }
 
@@ -148,10 +146,10 @@ abstract class BaseKitCommand(
                 val color: TextColor
                 if (index != wrongArgumentIndex) {
                     formattedStr = s
-                    color = theme.primary
+                    color = appearance.primary
                 } else {
                     formattedStr = "> $s <"
-                    color = theme.error
+                    color = appearance.error
                 }
                 appendText {
                     content(" $formattedStr")

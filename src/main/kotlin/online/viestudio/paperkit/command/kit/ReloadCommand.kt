@@ -25,7 +25,7 @@ class ReloadCommand : ChildCommand(
         } else listOf(allPlugins.first { it.name.equals(args[0], true) })
         sender.message {
             content("Reloading ${plugins.size} plugins..")
-            color(theme.primary)
+            color(appearance.primary)
         }
         supervisorScope {
             plugins.forEach {
@@ -40,9 +40,9 @@ class ReloadCommand : ChildCommand(
             content("${plugins.size} plugins has been reloaded.")
             showTextOnHover {
                 content(plugins.joinToString(", ") { it.name })
-                color(theme.accent)
+                color(appearance.accent)
             }
-            color(theme.primary)
+            color(appearance.primary)
         }
         return true
     }

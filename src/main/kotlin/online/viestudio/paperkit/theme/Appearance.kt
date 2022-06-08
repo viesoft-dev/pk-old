@@ -9,7 +9,7 @@ import online.viestudio.paperkit.adventure.hexColor
 import online.viestudio.paperkit.config.Comment
 
 @Serializable
-data class Theme(
+data class Appearance(
     @Comment(
         """
             The prefix of this plugin that appears in messages.

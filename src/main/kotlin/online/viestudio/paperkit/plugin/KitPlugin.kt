@@ -3,7 +3,7 @@ package online.viestudio.paperkit.plugin
 import kotlinx.coroutines.CoroutineScope
 import online.viestudio.paperkit.listener.KitListener
 import online.viestudio.paperkit.logger.KitLogger
-import online.viestudio.paperkit.theme.Theme
+import online.viestudio.paperkit.theme.Appearance
 import org.bukkit.plugin.Plugin
 import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
@@ -13,7 +13,7 @@ interface KitPlugin : Plugin, KoinComponent {
     val state: State
     val log: KitLogger
     val version: String
-    val theme: Theme
+    val appearance: Appearance
 
     /**
      * For running asynchronous tasks related to this plugin.

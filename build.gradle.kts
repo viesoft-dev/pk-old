@@ -25,7 +25,7 @@ plugins {
 }
 
 group = "online.viestudio"
-version = "1.0.3-dev"
+version = "1.0.4-dev"
 
 repositories {
     mavenCentral()
@@ -58,6 +58,7 @@ publishing {
             version = version
 
             from(components["java"])
+            artifact(tasks.kotlinSourcesJar)
         }
     }
 }

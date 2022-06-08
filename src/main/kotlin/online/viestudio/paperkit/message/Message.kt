@@ -3,7 +3,7 @@ package online.viestudio.paperkit.message
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.minimessage.MiniMessage
 import online.viestudio.paperkit.placeholder.applyPlaceholders
-import online.viestudio.paperkit.utils.lineSeparator
+import online.viestudio.paperkit.util.lineSeparator
 
 fun message(text: String): Message = text.split(lineSeparator)
 

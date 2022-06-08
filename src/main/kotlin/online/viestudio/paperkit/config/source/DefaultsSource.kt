@@ -5,7 +5,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
 import online.viestudio.paperkit.config.Comment
-import online.viestudio.paperkit.utils.lineSeparator
+import online.viestudio.paperkit.util.lineSeparator
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.InputStream
 import kotlin.reflect.KClass

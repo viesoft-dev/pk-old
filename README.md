@@ -157,18 +157,16 @@ Then, if the command requires any arguments for its executing, you have to overr
 ```kotlin
 override fun ArgumentsDeclaration.declareArguments() {
     argument {
-        name = "your name"
-        description = "The command requires your name "
-        isRequired = true
-        validator = {
-            when (it) {
+        name("your name")
+        description("The command requires your name!")
+        required()
+        validator { _, input ->
+            when (input) {
                 "vie10" -> "You are not vie10!"
                 else -> null
             }
         }
-        completer = {
-            listOf("vie10", "another")
-        }
+        completer { _, _ -> listOf("vie10", "another") }
     }
 }
 ```

@@ -15,7 +15,7 @@ data class Theme(
             The prefix of this plugin that appears in messages.
         """
     )
-    val pluginPrefix: String = "<{{primaryHex}}>[<{{accentHex}}>PaperKit<{{primaryHex}}>]",
+    val pluginPrefix: String = DEFAULT_PLUGIN_PREFIX,
     @Comment(
         """
            The primary color used in the plugin for the most part of common text.
@@ -71,6 +71,7 @@ data class Theme(
 
     companion object {
 
+        const val DEFAULT_PLUGIN_PREFIX = "<{{primaryHex}}>[<{{accentHex}}>PaperKit<{{primaryHex}}>]"
         const val DEFAULT_PRIMARY_HEX = "#B8B3E9"
         const val DEFAULT_ACCENT_HEX = "#F5F5F5"
         const val DEFAULT_WARN_HEX = "#f6cd61"

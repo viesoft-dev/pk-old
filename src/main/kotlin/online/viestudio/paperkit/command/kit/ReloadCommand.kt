@@ -49,20 +49,22 @@ class ReloadCommand : ChildCommand(
 
     override fun ArgumentsDeclaration.declareArguments() {
         argument {
-            name = "plugin"
-            description = """
-                Name of plugin that you would like to reload, or omit it, to reload all plugins.
-            """.trimIndent()
-            completer = {
+            name("plugin")
+            description(
+                """
+                    Name of plugin that you would like to reload, or omit it, to reload all plugins.
+                """.trimIndent()
+            )
+            completer { _, _ ->
                 allPlugins.map { it.name }
             }
-            validator = { pluginName ->
+            validator { _, pluginName ->
                 val plugin = allPlugins.find { it.name.equals(pluginName, true) }
                 if (plugin == null) {
                     "Plugin not found"
                 } else null
             }
-            isRequired = false
+            required()
         }
     }
 }

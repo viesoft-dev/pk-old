@@ -1,7 +1,8 @@
 name: PaperKit
-version: '${version}'
+version: "${version}"
 description: Framework to build great paper plugins
 author: vie10
 main: online.viestudio.paperkit.PaperKitPlugin
 load: STARTUP
 api-version: 1.18
+website: https://github.com/paper-kit/paper-kit

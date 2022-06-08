@@ -4,14 +4,15 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import online.viestudio.paperkit.adventure.appendText
 import online.viestudio.paperkit.adventure.message
-import online.viestudio.paperkit.adventure.showTextOnHover
-import online.viestudio.paperkit.adventure.text
 import online.viestudio.paperkit.command.argument.Argument
+import online.viestudio.paperkit.koin.config
 import online.viestudio.paperkit.koin.plugin
 import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.plugin.KitPlugin
-import online.viestudio.paperkit.utils.lineSeparator
-import online.viestudio.paperkit.utils.sliceStart
+import online.viestudio.paperkit.style.buildBeautifulHelp
+import online.viestudio.paperkit.theme.Theme
+import online.viestudio.paperkit.util.lineSeparator
+import online.viestudio.paperkit.util.sliceStart
 import org.bukkit.command.CommandSender
 
 abstract class BaseKitCommand(
@@ -27,30 +28,9 @@ abstract class BaseKitCommand(
     final override val minArguments: Int by lazy { minArguments ?: declaredArguments.filter { it.isRequired }.size }
     final override val maxArguments: Int by lazy { maxArguments ?: declaredArguments.size }
     final override val declaredArguments: List<Argument> by lazy { ArgumentsDeclaration().apply { declareArguments() }.arguments }
-    override val help: Component by lazy {
-        text {
-            color(theme.primary)
-            content(name)
-            showTextOnHover {
-                color(theme.accent)
-                content(description)
-            }
-            declaredArguments.forEach {
-                val notation = if (it.isRequired) "" else "?"
-
-                appendText {
-                    color(theme.accent)
-                    content(" <$notation${it.name}>")
-                    showTextOnHover {
-                        color(theme.accent)
-                        content(it.description)
-                    }
-                }
-            }
-        }
-    }
+    override val theme by config<Theme>()
+    override val help: Component by lazy { buildBeautifulHelp() }
     protected val plugin: KitPlugin by plugin()
-    protected val theme get() = plugin.theme
     protected val log get() = plugin.log
     private val subCommandNames: List<String> by lazy { subCommands.map { it.name } }
 
@@ -138,7 +118,7 @@ abstract class BaseKitCommand(
         }
         args.forEachIndexed { index, s ->
             val declaredArgument = declaredArguments.getOrNull(index) ?: return true
-            val result = runCatching { declaredArgument.validator(s) }.getOrElse { "Plugin error" }
+            val result = runCatching { declaredArgument.validator(args, s) }.getOrElse { "Plugin error" }
             if (result != null && result.isNotEmpty()) {
                 runCatching { onWrongArgument(sender, args, index, result) }.onFailure {
                     log.logProblem(
@@ -195,7 +175,7 @@ abstract class BaseKitCommand(
         if (args.isEmpty()) return emptyList()
         val declaredArgument = declaredArguments.getOrNull(args.lastIndex) ?: return extraComplete(args)
         val complete = runCatching {
-            declaredArgument.completer(args.last())
+            declaredArgument.completer(args, args.last())
         }.onFailure { log.logProblem(sender, args, it) }.getOrElse { emptyList() }
         return complete + extraComplete(args)
     }

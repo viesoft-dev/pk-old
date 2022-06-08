@@ -11,6 +11,7 @@ val ronfy = "1.1"
 val ktorm = "3.4.1"
 val kaml = "0.44.0"
 val miniMessage = "4.11.0"
+val delightJdbc = "1.5.3"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -25,7 +26,7 @@ plugins {
 }
 
 group = "online.viestudio"
-version = "1.1.0-dev"
+version = "1.2.0-dev"
 
 repositories {
     mavenCentral()
@@ -47,7 +48,7 @@ dependencies {
     // Dependency injection
     api("io.insert-koin", "koin-core", koin)
     // Database
-    api("org.ktorm", "ktorm-core", ktorm)
+    api("com.squareup.sqldelight", "jdbc-driver", delightJdbc)
 }
 
 publishing {

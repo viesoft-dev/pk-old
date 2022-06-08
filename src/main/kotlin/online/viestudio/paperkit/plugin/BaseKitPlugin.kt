@@ -22,7 +22,7 @@ import online.viestudio.paperkit.listener.unregister
 import online.viestudio.paperkit.plugin.KitPlugin.State
 import online.viestudio.paperkit.plugin.exception.InvalidPluginStateException
 import online.viestudio.paperkit.theme.Theme
-import online.viestudio.paperkit.utils.safeRunWithMeasuring
+import online.viestudio.paperkit.util.safeRunWithMeasuring
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.bind
 import org.koin.dsl.module

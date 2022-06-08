@@ -74,7 +74,9 @@ abstract class BaseKitPlugin(
         state = State.Started
         log.d { "Plugin started in $it millis." }
     }.onFailure {
-        state = State.Stopped
+        if (state == State.Starting) {
+            state = State.Stopped
+        }
         log.w(it) { "Plugin starting failed." }
     }.isSuccess
 

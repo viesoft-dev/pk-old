@@ -49,10 +49,11 @@ abstract class BaseKitPlugin(
     private val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
     private val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
     private val bindedListeners: MutableSet<KitListener> = concurrentSetOf()
+    private val qualifier get() = pluginQualifier
     private val pluginModule: KoinModule by lazy {
         module {
             single(StringQualifier(name)) { this@BaseKitPlugin } bind KitPlugin::class
-            single(pluginQualifier) { this@BaseKitPlugin } bind KitPlugin::class
+            single(qualifier) { this@BaseKitPlugin } bind KitPlugin::class
         }
     }
 

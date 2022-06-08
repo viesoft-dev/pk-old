@@ -81,7 +81,7 @@ with(tasks) {
     }
 
     shadowJar {
-        archiveFileName.set("full-${project.name}-${project.version}.jar")
+        archiveFileName.set("${project.name}-${project.version}.jar")
 
         fun ResolvedDependency.containsOrParents(content: String): Boolean {
             return name.contains(content) || parents.find { it.containsOrParents(content) } != null

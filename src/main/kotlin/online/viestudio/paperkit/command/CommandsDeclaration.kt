@@ -1,11 +1,13 @@
 package online.viestudio.paperkit.command
 
+typealias CommandInitializer = () -> KitCommand
+
 class CommandsDeclaration {
 
-    private val _commands: MutableList<KitCommand> = mutableListOf()
-    val commands: List<KitCommand> = _commands
+    private val initializers: MutableList<CommandInitializer> = mutableListOf()
+    val commands: List<KitCommand> = initializers.map { it() }
 
-    fun register(command: KitCommand) {
-        _commands.add(command)
+    fun register(initializer: CommandInitializer) {
+        initializers.add(initializer)
     }
 }

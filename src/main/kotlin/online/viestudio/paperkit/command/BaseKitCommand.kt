@@ -26,7 +26,7 @@ abstract class BaseKitCommand(
     final override val declaredArguments: List<Argument> by lazy { ArgumentsDeclaration().apply { declareArguments() }.arguments }
     override val minArguments: Int by lazy { declaredArguments.count { it.isRequired } }
     override val theme by config<Theme>()
-    override val help: Component by lazy { buildBeautifulHelp() }
+    override val help: Component get() = buildBeautifulHelp()
     protected val plugin: KitPlugin by plugin()
     protected val log get() = plugin.log
     private val subCommandNames: List<String> by lazy { subCommands.map { it.name } }
@@ -35,7 +35,6 @@ abstract class BaseKitCommand(
         minArguments
         declaredArguments
         plugin
-        help
     }
 
     protected open fun ArgumentsDeclaration.declareArguments() {

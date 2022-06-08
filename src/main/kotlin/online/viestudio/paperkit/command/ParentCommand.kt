@@ -23,8 +23,8 @@ abstract class ParentCommand(
 ) {
 
 
-    override val help: Component by lazy {
-        text {
+    override val help: Component
+        get() = text {
             append(theme.prefix)
             appendText {
                 content(" ${name.replaceFirstChar { it.uppercase() }}")
@@ -43,7 +43,6 @@ abstract class ParentCommand(
                 }
             }
         }
-    }
 
 
     final override suspend fun onExecute(sender: CommandSender, args: Arguments): Boolean = false

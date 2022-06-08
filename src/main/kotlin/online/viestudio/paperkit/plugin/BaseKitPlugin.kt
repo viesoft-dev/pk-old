@@ -34,7 +34,7 @@ import org.koin.core.module.Module as KoinModule
  * @param nThreads Count of threads to allocate by its coroutine scope.
  * Default is equivalent to number of available processors.
  */
-open class BaseKitPlugin(
+abstract class BaseKitPlugin(
     nThreads: Int = Runtime.getRuntime().availableProcessors(),
 ) : ScopeKitPlugin(nThreads) {
 

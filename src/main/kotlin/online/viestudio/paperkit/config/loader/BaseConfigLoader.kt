@@ -3,7 +3,7 @@ package online.viestudio.paperkit.config.loader
 import online.viestudio.paperkit.config.source.Source
 import kotlin.reflect.KClass
 
-abstract class BaseConfigLoader : ConfigLoader {
+internal abstract class BaseConfigLoader : ConfigLoader {
 
     private val _placeholderSources: MutableList<List<Source>> = mutableListOf()
     protected val placeholderSources = _placeholderSources

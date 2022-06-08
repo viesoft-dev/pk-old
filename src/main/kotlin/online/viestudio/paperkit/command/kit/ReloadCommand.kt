@@ -64,6 +64,7 @@ class ReloadCommand : ChildCommand(
                     "Plugin not found"
                 } else null
             }
+            isRequired(false)
         }
     }
 }

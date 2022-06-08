@@ -25,7 +25,7 @@ plugins {
 }
 
 group = "online.viestudio"
-version = "1.0.0-dev"
+version = "1.0.2-dev"
 
 repositories {
     mavenCentral()
@@ -48,6 +48,18 @@ dependencies {
     api("io.insert-koin", "koin-core", koin)
     // Database
     api("org.ktorm", "ktorm-core", ktorm)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "viestudio.online"
+            artifactId = "paper-kit"
+            version = version
+
+            from(components["java"])
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////

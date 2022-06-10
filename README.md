@@ -206,6 +206,10 @@ Add the dependency below into your build.gradle file to interact with PaperKit a
 Also, you need to declare `PaperKit` as dependency in your `plugin.yml`.
 Do not include PaperKit api in your plugin, as well, as the Kotlin stdlib.
 
+### [PaperKit Intellij Idea plugin](https://github.com/paper-kit/idea-paper-kit)
+
+Check out the plugin for Intellij Idea that will make the process to start a new PaperKit project really easy.
+
 #### Gradle
 
 ```kotlin

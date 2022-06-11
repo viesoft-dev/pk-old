@@ -71,7 +71,7 @@ data class Appearance(
 
     companion object {
 
-        const val DEFAULT_PLUGIN_PREFIX = "<{{primaryHex}}>[<{{accentHex}}>PaperKit<{{primaryHex}}>]"
+        const val DEFAULT_PLUGIN_PREFIX = "<#B8B3E9>[<#F5F5F5>PaperKit<#B8B3E9>]"
         const val DEFAULT_PRIMARY_HEX = "#B8B3E9"
         const val DEFAULT_ACCENT_HEX = "#F5F5F5"
         const val DEFAULT_WARN_HEX = "#f6cd61"

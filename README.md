@@ -198,7 +198,7 @@ the [Koin Documentation](https://insert-koin.io/docs/reference/introduction).
 
 ## How to start?
 
-There's a [template](https://github.com/paper-kit/template-paper-kit) to start a new project.
+An example how to build a PaperKit plugin you can find out [here](https://github.com/vie10/live-config).
 
 PaperKit is publishing into JitPack repository.
 Add the dependency below into your build.gradle file to interact with PaperKit api.

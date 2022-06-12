@@ -1,5 +1,7 @@
 package online.viestudio.paperkit.command.argument
 
+import online.viestudio.paperkit.util.lineSeparator
+
 data class ArgumentImpl(
     override val name: String,
     override val description: String,
@@ -22,6 +24,11 @@ data class ArgumentImpl(
 
         override fun description(description: String): Builder = apply {
             this.description = description
+        }
+
+        override fun from(config: ArgumentConfig): Argument.Builder = apply {
+            this.name = config.name
+            this.description = config.description.joinToString(lineSeparator)
         }
 
         override fun required() = apply {

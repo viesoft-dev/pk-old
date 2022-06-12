@@ -8,19 +8,7 @@ import online.viestudio.paperkit.style.buildBeautifulHelp
 import online.viestudio.paperkit.util.lineSeparator
 import org.bukkit.command.CommandSender
 
-abstract class ParentCommand(
-    name: String,
-    aliases: List<String> = emptyList(),
-    description: String = "",
-    permission: String = "$name.execute",
-    subCommands: List<KitCommand>,
-) : BaseKitCommand(
-    name = name,
-    aliases = aliases,
-    description = description,
-    permission = permission,
-    subCommands = subCommands
-) {
+abstract class ParentCommand(subCommands: List<KitCommand>) : BaseKitCommand(subCommands) {
 
 
     override val help: Component

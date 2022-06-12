@@ -1,10 +1,8 @@
 package online.viestudio.paperkit.placeholder
 
-import online.viestudio.paperkit.message.Message
-
 const val PLACEHOLDER_FORMAT = "{%s}"
 
-fun Message.applyPlaceholders(vararg placeholders: Pair<String, Any>) = map { it.applyPlaceholders(*placeholders) }
+fun List<String>.applyPlaceholders(vararg placeholders: Pair<String, Any>) = map { it.applyPlaceholders(*placeholders) }
 
 fun String.applyPlaceholders(vararg placeholders: Pair<String, Any>): String {
     var temp = this

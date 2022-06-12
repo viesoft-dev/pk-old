@@ -3,30 +3,28 @@ package online.viestudio.paperkit.command.kit
 import kotlinx.coroutines.async
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
-import online.viestudio.paperkit.adventure.message
-import online.viestudio.paperkit.adventure.showTextOnHover
 import online.viestudio.paperkit.command.Arguments
 import online.viestudio.paperkit.command.ChildCommand
+import online.viestudio.paperkit.config.kit.CommandsConfig.Companion.commandsConfig
+import online.viestudio.paperkit.config.kit.MessagesConfig.Companion.messages
+import online.viestudio.paperkit.config.kit.TranslationConfig.Companion.translation
 import online.viestudio.paperkit.koin.Global
+import online.viestudio.paperkit.message.message
 import online.viestudio.paperkit.plugin.KitPlugin
 import org.bukkit.command.CommandSender
+import java.util.Collections.singleton
 
-class ReloadCommand : ChildCommand(
-    name = "reload",
-    description = "Reloads plugin or all if no plugin is specified.",
-    permission = "paper-kit.reload",
-) {
+internal class ReloadCommand : ChildCommand() {
 
+    override val config get() = commandsConfig.reload
     private val allPlugins get() = Global.koin.getAll<KitPlugin>().toSet()
+    private val Arguments.plugin: String get() = this[0]
 
     override suspend fun onExecute(sender: CommandSender, args: Arguments): Boolean {
-        val plugins = if (args.isEmpty()) {
+        val plugins = if (args.plugin.equals("all", true)) {
             allPlugins
-        } else listOf(allPlugins.first { it.name.equals(args[0], true) })
-        sender.message {
-            content("Reloading ${plugins.size} plugins..")
-            color(appearance.primary)
-        }
+        } else singleton(findPluginByName(args.plugin))
+        sender.message(messages.reloadingPlugins, "count" to plugins.size)
         supervisorScope {
             plugins.forEach {
                 async {
@@ -36,35 +34,28 @@ class ReloadCommand : ChildCommand(
                 }.start()
             }
         }
-        sender.message {
-            content("${plugins.size} plugins has been reloaded.")
-            showTextOnHover {
-                content(plugins.joinToString(", ") { it.name })
-                color(appearance.accent)
-            }
-            color(appearance.primary)
-        }
+        sender.message(
+            messages.pluginsReloaded,
+            "count" to plugins.size,
+            "list" to plugins.joinToString(", ") { it.name }
+        )
         return true
     }
 
+    private fun findPluginByName(name: String) = allPlugins.first { it.name.equals(name, true) }
+
     override fun ArgumentsDeclaration.declareArguments() {
         argument {
-            name("plugin")
-            description(
-                """
-                    Name of plugin that you would like to reload, or omit it, to reload all plugins.
-                """.trimIndent()
-            )
+            from(config.argument("plugin"))
             completer { _, _ ->
                 allPlugins.map { it.name }
             }
             validator { _, pluginName ->
                 val plugin = allPlugins.find { it.name.equals(pluginName, true) }
                 if (plugin == null) {
-                    "Plugin not found"
+                    translation.pluginNotFound
                 } else null
             }
-            isRequired(false)
         }
     }
 }

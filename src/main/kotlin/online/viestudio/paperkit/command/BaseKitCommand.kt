@@ -14,17 +14,18 @@ import online.viestudio.paperkit.util.sliceStart
 import org.bukkit.command.CommandSender
 
 abstract class BaseKitCommand(
-    override val name: String,
-    override val aliases: List<String> = emptyList(),
-    override val description: String = "",
-    override val permission: String = "$name.execute",
     override val subCommands: List<KitCommand> = emptyList(),
 ) : KitCommand {
 
     final override val declaredArguments: List<Argument> by lazy { ArgumentsDeclaration().apply { declareArguments() }.arguments }
+    override val name: String get() = config.name
+    override val aliases: List<String> get() = config.aliases.orEmpty()
+    override val description: String get() = config.description
+    override val permission: String get() = config.permission
     override val minArguments: Int by lazy { declaredArguments.count { it.isRequired } }
     override val appearance get() = plugin.appearance
     override val help: Component get() = buildBeautifulHelp()
+    protected abstract val config: CommandConfig
     protected val plugin: KitPlugin by plugin()
     protected val log get() = plugin.log
     private val subCommandNames: List<String> by lazy { subCommands.map { it.name } }

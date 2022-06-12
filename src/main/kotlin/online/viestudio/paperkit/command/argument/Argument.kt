@@ -25,6 +25,8 @@ interface Argument {
 
         fun description(description: String): Builder
 
+        fun from(config: ArgumentConfig): Builder
+
         fun isRequired(isRequired: Boolean): Builder
 
         fun required(): Builder

@@ -1,11 +1,11 @@
 package online.viestudio.paperkit.command.kit
 
 import online.viestudio.paperkit.command.ParentCommand
+import online.viestudio.paperkit.config.kit.CommandsConfig.Companion.commandsConfig
 
-class PaperKitCommand : ParentCommand(
-    name = "kit",
-    description = "Main command of Paper-Kit framework.",
-    aliases = listOf("kt"),
-    permission = "paper-kit.execute",
+internal class PaperKitCommand : ParentCommand(
     subCommands = listOf(ReloadCommand())
-)
+) {
+
+    override val config get() = commandsConfig.paperKit
+}

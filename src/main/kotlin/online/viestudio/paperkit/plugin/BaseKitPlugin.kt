@@ -47,8 +47,8 @@ abstract class BaseKitPlugin(
     private val commandsDeclaration by lazy {
         CommandsDeclaration().apply { declareCommands() }
     }
-    private val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
-    private val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
+    protected val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
+    protected val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
     private val bindedListeners: MutableSet<KitListener> = concurrentSetOf()
     private val qualifier get() = pluginQualifier
     private val appearanceSources by lazy {

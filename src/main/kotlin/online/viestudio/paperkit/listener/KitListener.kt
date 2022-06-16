@@ -42,6 +42,10 @@ fun KitListener.bindToPlugin() {
 
 fun KitListener.register() {
     val plugin by plugin<KitPlugin>()
+    register(plugin)
+}
+
+fun KitListener.register(plugin: KitPlugin) {
     val pluginManager = plugin.server.pluginManager
     val listeners = listeners(plugin)
     listeners.forEach { (clazz, registeredListeners) ->
@@ -71,7 +75,7 @@ private fun KitListener.listeners(plugin: KitPlugin): Map<Class<out Event>, Muta
                     Actual: ${method.toGenericString()}
                     
                     This problem is related to ${plugin.name} plugin, report it to the developers.
-                """.trimIndent()
+                """
             }
             return@forEach
         }
@@ -91,7 +95,7 @@ private fun Class<*>.logWarnIfDeprecated(method: Method, plugin: KitPlugin) {
                 ${warning.reason.ifEmpty { "Server performance will be affected." }}
                 
                 This problem is related to ${plugin.name} plugin, report it to the developers.
-            """.trimIndent()
+            """
         }
     }
 }

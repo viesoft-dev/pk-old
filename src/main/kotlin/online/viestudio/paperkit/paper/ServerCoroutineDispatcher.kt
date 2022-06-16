@@ -21,5 +21,4 @@ internal class ServerCoroutineDispatcher(
             server.scheduler.runTask(plugin, block)
         }
     }
-
 }

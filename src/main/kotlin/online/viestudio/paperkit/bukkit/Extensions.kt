@@ -3,6 +3,7 @@ package online.viestudio.paperkit.bukkit
 import online.viestudio.paperkit.nms.nmsVersion
 import org.bukkit.Server
 import org.bukkit.entity.Player
+import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.PluginManager
@@ -35,3 +36,7 @@ internal fun Server.syncCommands() {
 }
 
 inline fun Server.onlinePlayers(action: (Player) -> Unit) = onlinePlayers.forEach(action)
+
+fun Cancellable.cancel() {
+    isCancelled = true
+}

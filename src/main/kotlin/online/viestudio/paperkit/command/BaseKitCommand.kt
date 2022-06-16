@@ -90,7 +90,7 @@ abstract class BaseKitCommand(
     private fun KitLogger.logProblem(sender: CommandSender, args: Arguments, e: Throwable) = w(e) {
         """
             Executing command $name failed.
-            Sender: ${sender}.
+            Sender: $sender.
             Arguments: ${args.joinToString(", ")}.
             Thread: ${Thread.currentThread()}.
             Error message: ${e.message}

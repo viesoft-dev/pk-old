@@ -46,11 +46,12 @@ internal class ReloadCommand : ChildCommand() {
 
     override fun ArgumentsDeclaration.declareArguments() {
         argument {
-            from(config.argument("plugin"))
+            config { config.argument("plugin") }
             completer { _, _ ->
-                allPlugins.map { it.name }
+                allPlugins.map { it.name }.toMutableList().apply { add("all") }
             }
             validator { _, pluginName ->
+                if (pluginName.equals("all", true)) return@validator null
                 val plugin = allPlugins.find { it.name.equals(pluginName, true) }
                 if (plugin == null) {
                     translation.pluginNotFound

@@ -2,14 +2,12 @@
 // Versions
 ///////////////////////////////////////////////////////////////////////////
 
-val paper = "1.18.2-R0.1-SNAPSHOT"
+val paper = "1.19-R0.1-SNAPSHOT"
 val coroutines = "1.6.2"
 val hoplite = "2.1.5"
 val kotlinxSerialization = "1.3.3"
-val koin = "3.1.6"
-val ronfy = "1.1"
-val ktorm = "3.4.1"
-val kaml = "0.44.0"
+val koin = "3.2.0"
+val kaml = "0.45.0"
 val miniMessage = "4.11.0"
 val delightJdbc = "1.5.3"
 
@@ -26,7 +24,7 @@ plugins {
 }
 
 group = "online.viestudio"
-version = "1.0.0"
+version = "2.0.0"
 
 repositories {
     mavenCentral()

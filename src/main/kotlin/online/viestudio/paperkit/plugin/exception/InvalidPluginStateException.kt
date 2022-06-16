@@ -10,7 +10,7 @@ data class InvalidPluginStateException(
     """
         Plugin is in an invalid state.
         Expected state: ${expectedStates.joinToString(" or ")}.
-        Actual state: ${actualState}.
+        Actual state: $actualState.
         It's recommend to check state before invoking an action.
     """.trimIndent()
 )

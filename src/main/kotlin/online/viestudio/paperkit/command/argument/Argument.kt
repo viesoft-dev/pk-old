@@ -15,17 +15,12 @@ interface Argument {
 
     interface Builder {
 
-        var name: String
-        var description: String
+        var configProvider: () -> ArgumentConfig
         var isRequired: Boolean
         var validator: Validator
         var completer: Completer
 
-        fun name(name: String): Builder
-
-        fun description(description: String): Builder
-
-        fun from(config: ArgumentConfig): Builder
+        fun config(configProvider: () -> ArgumentConfig)
 
         fun isRequired(isRequired: Boolean): Builder
 

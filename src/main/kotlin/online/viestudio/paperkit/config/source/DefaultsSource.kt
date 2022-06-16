@@ -68,7 +68,7 @@ data class DefaultsSource(
         val clazz = children::class
         if (!clazz.isData) return
         children::class.memberProperties.forEach {
-            it.writeAnnotationComments(path = "${path}.${it.path}", config = config, holder = children)
+            it.writeAnnotationComments(path = "$path.${it.path}", config = config, holder = children)
         }
     }
 }

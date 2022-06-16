@@ -3,32 +3,24 @@ package online.viestudio.paperkit.command.argument
 import online.viestudio.paperkit.util.lineSeparator
 
 data class ArgumentImpl(
-    override val name: String,
-    override val description: String,
+    private val configProvider: () -> ArgumentConfig,
     override val isRequired: Boolean,
     override val validator: Validator,
     override val completer: Completer,
 ) : Argument {
 
+    override val name: String get() = configProvider().name
+    override val description: String get() = configProvider().description.joinToString(lineSeparator)
+
     class Builder : Argument.Builder {
 
-        override var name: String = ""
-        override var description: String = ""
+        override lateinit var configProvider: () -> ArgumentConfig
         override var isRequired: Boolean = true
         override var validator: Validator = { _, _ -> null }
         override var completer: Completer = { _, _ -> emptyList() }
 
-        override fun name(name: String): Builder = apply {
-            this.name = name
-        }
-
-        override fun description(description: String): Builder = apply {
-            this.description = description
-        }
-
-        override fun from(config: ArgumentConfig): Argument.Builder = apply {
-            this.name = config.name
-            this.description = config.description.joinToString(lineSeparator)
+        override fun config(configProvider: () -> ArgumentConfig) {
+            this.configProvider = configProvider
         }
 
         override fun required() = apply {
@@ -47,6 +39,6 @@ data class ArgumentImpl(
             this.completer = completer
         }
 
-        override fun build() = ArgumentImpl(name, description, isRequired, validator, completer)
+        override fun build() = ArgumentImpl(configProvider, isRequired, validator, completer)
     }
 }

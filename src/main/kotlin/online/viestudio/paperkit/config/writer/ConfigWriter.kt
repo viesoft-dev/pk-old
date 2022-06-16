@@ -49,5 +49,4 @@ interface ConfigWriter {
      * Takes first valid source from [sources] then write into [target].
      */
     fun write(target: FileSource, sources: List<Source>)
-
 }

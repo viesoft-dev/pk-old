@@ -13,4 +13,3 @@ fun <T : Audience> T.message(message: List<String>, vararg placeholders: Pair<St
     message(message.applyPlaceholders(*placeholders))
 
 fun <T : Audience> T.message(message: List<String>) = sendMessage(message.asComponent)
-

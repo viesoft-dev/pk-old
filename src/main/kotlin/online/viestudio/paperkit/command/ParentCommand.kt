@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender
 
 abstract class ParentCommand(subCommands: List<KitCommand>) : BaseKitCommand(subCommands) {
 
-
     override val help: Component
         get() = text {
             append(appearance.prefix)
@@ -31,7 +30,6 @@ abstract class ParentCommand(subCommands: List<KitCommand>) : BaseKitCommand(sub
                 }
             }
         }
-
 
     final override suspend fun onExecute(sender: CommandSender, args: Arguments): Boolean = false
 }

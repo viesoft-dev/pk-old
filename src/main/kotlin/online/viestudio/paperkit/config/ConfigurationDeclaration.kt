@@ -1,10 +1,7 @@
 package online.viestudio.paperkit.config
 
 import online.viestudio.paperkit.config.loader.ConfigLoader
-import online.viestudio.paperkit.config.source.DefaultsSource
-import online.viestudio.paperkit.config.source.FileSource
-import online.viestudio.paperkit.config.source.ResourceSource
-import online.viestudio.paperkit.config.source.Source
+import online.viestudio.paperkit.config.source.*
 import online.viestudio.paperkit.plugin.KitPlugin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -53,6 +50,11 @@ class ConfigurationDeclaration(
      * Creates [DefaultsSource] of class.
      */
     fun <T : Any> defaults(kClass: KClass<T>) = DefaultsSource(kClass)
+
+    /**
+     * Creates [InstanceSource] of instance.    * @return
+     */
+    fun <T : Any> instance(instance: T) = InstanceSource(instance)
 
     infix fun Source.or(source: Source): List<Source> = listOf(this, source)
 

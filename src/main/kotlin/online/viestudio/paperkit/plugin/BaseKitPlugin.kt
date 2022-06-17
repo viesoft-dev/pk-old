@@ -37,6 +37,7 @@ import org.koin.core.module.Module as KoinModule
  */
 abstract class BaseKitPlugin(
     nThreads: Int = Runtime.getRuntime().availableProcessors(),
+    bindListeners: List<KitListener> = emptyList(),
 ) : ScopeKitPlugin(nThreads) {
 
     final override lateinit var appearance: Appearance
@@ -49,7 +50,8 @@ abstract class BaseKitPlugin(
     }
     protected val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
     protected val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
-    private val bindedListeners: MutableSet<KitListener> = concurrentSetOf()
+    private val bindedListeners: MutableSet<KitListener> =
+        concurrentSetOf<KitListener>().apply { addAll(bindListeners) }
     private val qualifier get() = pluginQualifier
     private val appearanceSources by lazy {
         listOf(

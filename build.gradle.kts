@@ -20,7 +20,7 @@ plugins {
     kotlin("plugin.serialization") version "1.7.0"
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.jetbrains.dokka") version "1.6.21"
+    id("org.jetbrains.dokka") version "1.7.0"
 }
 
 group = "online.viestudio"

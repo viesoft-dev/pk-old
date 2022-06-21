@@ -109,16 +109,20 @@ Let's take a look into `PaperKitCommand` and its structure.
 
 ```kotlin
 class PaperKitCommand : ParentCommand(
-    name = "kit",
-    description = "Main command of Paper-Kit framework.",
-    aliases = listOf("kt"),
-    permission = "paper-kit.execute",
     subCommands = listOf(ReloadCommand())
-)
+) {
+
+    override val config = CommandConfig(
+        name = "paperkit",
+        aliases = listOf("kt"),
+        description = "PaperKit manage command",
+        permission = "paperkit.execute"
+    )
+}
 ```
 
 PaperKit command structure splits into two parts. Parent and child commands.
-They both are implementing `BaseKitCommand`, so the difference is only in default set up.
+They both are implementing `BaseKitCommand`, so the difference is only in default implementations.
 Parent command is supposed to hold children commands and nothing more.
 It doesn't mean that child command can't do that, but it means that parent commands already have everything done to go
 with the task.
@@ -127,11 +131,20 @@ Parent command provides help that describes its child commands, whenever child c
 so let's move to the child command.
 
 ```kotlin
-class ReloadCommand : ChildCommand(
-    name = "reload",
-    description = "An example child command",
-    permission = "example.execute",
-)
+class ReloadCommand : ChildCommand() {
+
+    override val config = CommandConfig(
+        name = "reload",
+        description = "Reload plugin or all",
+        permission = "paperkit.reload",
+        arguments = mapOf(
+            "name" to ArgumentConfig(
+                name = "name",
+                description = message("Name of the plugin which you want to reload, or 'all' to reload all.")
+            ),
+        )
+    )
+}
 ```
 
 Now you can see the both commands are very similarly. But the child command also have body, where its logic is
@@ -143,7 +156,7 @@ implemented.
 override suspend fun onExecute(sender: CommandSender, args: Arguments): Boolean {
     sender.message {
         content("Hello, ${args.name}!")
-        color(theme.primary)
+        color(appearance.primary)
     }
     return true
 }
@@ -158,14 +171,15 @@ override fun ArgumentsDeclaration.declareArguments() {
     argument {
         name("your name")
         description("The command requires your name!")
-        required()
         validator { _, input ->
             when (input) {
                 "vie10" -> "You are not vie10!"
                 else -> null
             }
         }
-        completer { _, _ -> listOf("vie10", "another") }
+        completer { _, _ ->
+            listOf("vie10", "another")
+        }
     }
 }
 ```

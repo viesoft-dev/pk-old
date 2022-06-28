@@ -26,11 +26,13 @@ internal class KitEventExecutor(
         }
         scope.launch(start = CoroutineStart.UNDISPATCHED) {
             runCatching {
-                methodListener.kotlinFunction?.callSuspend(listener, event)
-            }.recoverCatching {
-                methodListener.invoke(listener, event)
+                if (methodListener.kotlinFunction?.isSuspend == true) {
+                    methodListener.kotlinFunction!!.callSuspend(listener, event)
+                } else {
+                    methodListener.invoke(listener, event)
+                }
             }.onFailure {
-                plugin.log.w { "Unable to call event listener ${methodListener.toGenericString()} on ${listener::class.jvmName}" }
+                plugin.log.w(it) { "Unable to call event listener ${methodListener.toGenericString()} on ${listener::class.jvmName}" }
             }
         }
     }

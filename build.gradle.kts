@@ -10,6 +10,10 @@ val koin = "3.2.0"
 val kaml = "0.45.0"
 val miniMessage = "4.11.0"
 val delightJdbc = "1.5.3"
+val mysqlConnectorJava = "8.0.15"
+val sqliteJdbc = "3.36.0.3"
+val postgresql = "42.4.0"
+val exposed = "0.38.2"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -46,7 +50,12 @@ dependencies {
     // Dependency injection
     api("io.insert-koin", "koin-core", koin)
     // Database
-    api("com.squareup.sqldelight", "jdbc-driver", delightJdbc)
+    api("mysql", "mysql-connector-java", mysqlConnectorJava)
+    api("org.xerial", "sqlite-jdbc", sqliteJdbc)
+    api("org.postgresql", "postgresql", postgresql)
+    api("org.jetbrains.exposed", "exposed-core", exposed)
+    api("org.jetbrains.exposed", "exposed-dao", exposed)
+    api("org.jetbrains.exposed", "exposed-jdbc", exposed)
 }
 
 publishing {

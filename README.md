@@ -227,7 +227,7 @@ Check out the plugin for Intellij Idea that will make the process to start a new
 
 ```kotlin
 plugins {
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("plugin.serialization") version "1.7.0"
 }
 
 repositories {

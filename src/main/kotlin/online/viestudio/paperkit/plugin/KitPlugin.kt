@@ -1,6 +1,7 @@
 package online.viestudio.paperkit.plugin
 
 import kotlinx.coroutines.CoroutineScope
+import online.viestudio.paperkit.lifecycle.LifecycleListener
 import online.viestudio.paperkit.listener.KitListener
 import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.theme.Appearance
@@ -64,6 +65,11 @@ interface KitPlugin : Plugin, KoinComponent {
      * Bind [KitListener] (un)registration to [KitPlugin] lifecycle.
      */
     suspend fun bindListener(listener: KitListener)
+
+    /**
+     * Register [LifecycleListener] to [KitPlugin] lifecycle.
+     */
+    fun registerLifecycleListener(listener: LifecycleListener)
 
     /**
      * Represents state of plugin lifecycle.

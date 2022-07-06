@@ -2,7 +2,7 @@
 
 # PaperKit — framework that helps you develop Paper plugins fast and easy.
 
-![Version badge](https://img.shields.io/static/v1?label=Version&message=2.0.3&color=red&style=for-the-badge)
+![Version badge](https://img.shields.io/static/v1?label=Version&message=2.1.0&color=red&style=for-the-badge)
 
 Framework based on Paper api to build awesome plugins easy to extend and support.
 Turns plugins development to convenient and fast process.

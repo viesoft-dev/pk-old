@@ -5,8 +5,10 @@ import net.kyori.adventure.text.format.TextColor
 import online.viestudio.paperkit.adventure.appendText
 import online.viestudio.paperkit.adventure.message
 import online.viestudio.paperkit.command.argument.Argument
+import online.viestudio.paperkit.config.kit.MessagesConfig.Companion.messages
 import online.viestudio.paperkit.koin.plugin
 import online.viestudio.paperkit.logger.KitLogger
+import online.viestudio.paperkit.message.message
 import online.viestudio.paperkit.plugin.KitPlugin
 import online.viestudio.paperkit.style.buildBeautifulHelp
 import online.viestudio.paperkit.util.lineSeparator
@@ -62,28 +64,12 @@ abstract class BaseKitCommand(
     }
 
     protected open suspend fun onHasNotPermission(sender: CommandSender, args: Arguments): Boolean {
-        sender.message {
-            content(
-                """
-                    You've not permission to execute this command.
-                    Be careful, administration are watching for you!
-                """.trimIndent()
-            )
-            color(appearance.error)
-        }
+        sender.message(messages.notEnoughPermissions)
         return false
     }
 
     protected open suspend fun onExecuteFailure(sender: CommandSender, args: Arguments, e: Throwable) {
-        sender.message {
-            content(
-                """
-                    This command seems to not work properly.
-                    Please, contact the server administrator to resolve the problem.
-                """.trimIndent()
-            )
-            color(appearance.error)
-        }
+        sender.message(messages.commandNotWork)
         log.logProblem(sender, args, e)
     }
 

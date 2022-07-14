@@ -232,7 +232,7 @@ abstract class BaseKitPlugin(
         }
     }
 
-    override fun registerLifecycleListener(listener: LifecycleListener) {
+    override suspend fun registerLifecycleListener(listener: LifecycleListener) {
         registeredLifecycleListeners.add(listener)
         if (state == State.Starting) scope.launch { listener.onStart() }
     }

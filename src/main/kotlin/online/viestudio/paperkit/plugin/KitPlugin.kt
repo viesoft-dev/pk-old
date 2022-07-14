@@ -69,7 +69,7 @@ interface KitPlugin : Plugin, KoinComponent {
     /**
      * Register [LifecycleListener] to [KitPlugin] lifecycle.
      */
-    fun registerLifecycleListener(listener: LifecycleListener)
+    suspend fun registerLifecycleListener(listener: LifecycleListener)
 
     /**
      * Represents state of plugin lifecycle.

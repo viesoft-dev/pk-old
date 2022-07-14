@@ -3,14 +3,13 @@
 ///////////////////////////////////////////////////////////////////////////
 
 val paper = "1.19-R0.1-SNAPSHOT"
-val coroutines = "1.6.2"
-val hoplite = "2.1.5"
+val coroutines = "1.6.4"
+val hoplite = "2.3.1"
 val kotlinxSerialization = "1.3.3"
 val koin = "3.2.0"
-val kaml = "0.45.0"
+val kaml = "0.46.0"
 val miniMessage = "4.11.0"
-val delightJdbc = "1.5.3"
-val mysqlConnectorJava = "8.0.15"
+val mysqlConnectorJava = "8.0.29"
 val sqliteJdbc = "3.36.0.3"
 val postgresql = "42.4.0"
 val exposed = "0.38.2"
@@ -20,11 +19,11 @@ val exposed = "0.38.2"
 ///////////////////////////////////////////////////////////////////////////
 
 plugins {
-    kotlin("jvm") version "1.7.0"
-    kotlin("plugin.serialization") version "1.7.0"
+    kotlin("jvm") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.10"
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.jetbrains.dokka") version "1.7.0"
+    id("org.jetbrains.dokka") version "1.7.10"
 }
 
 group = "online.viestudio"
@@ -41,11 +40,11 @@ dependencies {
     api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines)
     // Configuration
     api("com.sksamuel.hoplite", "hoplite-yaml", hoplite)
-    api("com.charleskorn.kaml", "kaml", kaml)
     // Paper
     api("io.papermc.paper", "paper-api", paper)
     api("net.kyori", "adventure-text-minimessage", miniMessage)
-    // Json
+    // (De)Serialization
+    api("com.charleskorn.kaml", "kaml", kaml)
     api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerialization)
     // Dependency injection
     api("io.insert-koin", "koin-core", koin)

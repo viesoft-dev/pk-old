@@ -46,6 +46,7 @@ dependencies {
     // (De)Serialization
     api("com.charleskorn.kaml", "kaml", kaml)
     api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerialization)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerialization)
     // Dependency injection
     api("io.insert-koin", "koin-core", koin)
     // Database

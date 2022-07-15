@@ -106,6 +106,10 @@ with(tasks) {
         gradleVersion = "7.4.2"
     }
 
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    }
+
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.apply {
             jvmTarget = "17"

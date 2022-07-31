@@ -4,7 +4,7 @@
 
 val paperVersion = "1.19-R0.1-SNAPSHOT"
 val coroutinesVersion = "1.6.4"
-val hopliteVersion = "2.3.1"
+val hopliteVersion: String by project
 val kotlinxSerializationVersion = "1.3.3"
 val koinVersion = "3.2.0"
 val kamlVersion = "0.46.0"

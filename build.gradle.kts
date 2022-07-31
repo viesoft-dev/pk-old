@@ -2,17 +2,17 @@
 // Versions
 ///////////////////////////////////////////////////////////////////////////
 
-val paperVersion = "1.19-R0.1-SNAPSHOT"
-val coroutinesVersion = "1.6.4"
-val hopliteVersion: String by project
-val kotlinxSerializationVersion = "1.3.3"
-val koinVersion = "3.2.0"
-val kamlVersion = "0.46.0"
-val miniMessageVersion = "4.11.0"
-val mysqlConnectorJavaVersion = "8.0.29"
-val sqliteJdbcVersion = "3.36.0.3"
-val postgresqlVersion = "42.4.0"
-val exposedVersion = "0.38.2"
+val paper = "1.19-R0.1-SNAPSHOT"
+val coroutines = "1.6.4"
+val hoplite = "2.4.0"
+val kotlinxSerialization = "1.4.0-RC"
+val koin = "3.2.0"
+val kaml = "0.46.0"
+val miniMessage = "4.11.0"
+val mysqlConnectorJava = "8.0.30"
+val sqliteJdbc = "3.36.0.3"
+val postgresql = "42.4.0"
+val exposed = "0.38.2"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -24,6 +24,7 @@ plugins {
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.jetbrains.dokka") version "1.7.10"
+    id("com.github.ben-manes.versions") version "0.42.0"
 }
 
 group = "online.viestudio"
@@ -37,25 +38,25 @@ repositories {
 
 dependencies {
     // Kotlin
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutinesVersion)
+    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines)
     // Configuration
-    api("com.sksamuel.hoplite", "hoplite-yaml", hopliteVersion)
+    api("com.sksamuel.hoplite", "hoplite-yaml", hoplite)
     // Paper
-    api("io.papermc.paper", "paper-api", paperVersion)
-    api("net.kyori", "adventure-text-minimessage", miniMessageVersion)
+    api("io.papermc.paper", "paper-api", paper)
+    api("net.kyori", "adventure-text-minimessage", miniMessage)
     // (De)Serialization
-    api("com.charleskorn.kaml", "kaml", kamlVersion)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerializationVersion)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerializationVersion)
+    api("com.charleskorn.kaml", "kaml", kaml)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerialization)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerialization)
     // Dependency injection
-    api("io.insert-koin", "koin-core", koinVersion)
+    api("io.insert-koin", "koin-core", koin)
     // Database
-    api("mysql", "mysql-connector-java", mysqlConnectorJavaVersion)
-    api("org.xerial", "sqlite-jdbc", sqliteJdbcVersion)
-    api("org.postgresql", "postgresql", postgresqlVersion)
-    api("org.jetbrains.exposed", "exposed-core", exposedVersion)
-    api("org.jetbrains.exposed", "exposed-dao", exposedVersion)
-    api("org.jetbrains.exposed", "exposed-jdbc", exposedVersion)
+    api("mysql", "mysql-connector-java", mysqlConnectorJava)
+    api("org.xerial", "sqlite-jdbc", sqliteJdbc)
+    api("org.postgresql", "postgresql", postgresql)
+    api("org.jetbrains.exposed", "exposed-core", exposed)
+    api("org.jetbrains.exposed", "exposed-dao", exposed)
+    api("org.jetbrains.exposed", "exposed-jdbc", exposed)
 }
 
 publishing {

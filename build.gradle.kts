@@ -2,17 +2,17 @@
 // Versions
 ///////////////////////////////////////////////////////////////////////////
 
-val paper = "1.19-R0.1-SNAPSHOT"
-val coroutines = "1.6.4"
-val hoplite = "2.3.1"
-val kotlinxSerialization = "1.3.3"
-val koin = "3.2.0"
-val kaml = "0.46.0"
-val miniMessage = "4.11.0"
-val mysqlConnectorJava = "8.0.29"
-val sqliteJdbc = "3.36.0.3"
-val postgresql = "42.4.0"
-val exposed = "0.38.2"
+val paperVersion = "1.19-R0.1-SNAPSHOT"
+val coroutinesVersion = "1.6.4"
+val hopliteVersion = "2.3.1"
+val kotlinxSerializationVersion = "1.3.3"
+val koinVersion = "3.2.0"
+val kamlVersion = "0.46.0"
+val miniMessageVersion = "4.11.0"
+val mysqlConnectorJavaVersion = "8.0.29"
+val sqliteJdbcVersion = "3.36.0.3"
+val postgresqlVersion = "42.4.0"
+val exposedVersion = "0.38.2"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -37,25 +37,25 @@ repositories {
 
 dependencies {
     // Kotlin
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines)
+    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutinesVersion)
     // Configuration
-    api("com.sksamuel.hoplite", "hoplite-yaml", hoplite)
+    api("com.sksamuel.hoplite", "hoplite-yaml", hopliteVersion)
     // Paper
-    api("io.papermc.paper", "paper-api", paper)
-    api("net.kyori", "adventure-text-minimessage", miniMessage)
+    api("io.papermc.paper", "paper-api", paperVersion)
+    api("net.kyori", "adventure-text-minimessage", miniMessageVersion)
     // (De)Serialization
-    api("com.charleskorn.kaml", "kaml", kaml)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerialization)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerialization)
+    api("com.charleskorn.kaml", "kaml", kamlVersion)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerializationVersion)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerializationVersion)
     // Dependency injection
-    api("io.insert-koin", "koin-core", koin)
+    api("io.insert-koin", "koin-core", koinVersion)
     // Database
-    api("mysql", "mysql-connector-java", mysqlConnectorJava)
-    api("org.xerial", "sqlite-jdbc", sqliteJdbc)
-    api("org.postgresql", "postgresql", postgresql)
-    api("org.jetbrains.exposed", "exposed-core", exposed)
-    api("org.jetbrains.exposed", "exposed-dao", exposed)
-    api("org.jetbrains.exposed", "exposed-jdbc", exposed)
+    api("mysql", "mysql-connector-java", mysqlConnectorJavaVersion)
+    api("org.xerial", "sqlite-jdbc", sqliteJdbcVersion)
+    api("org.postgresql", "postgresql", postgresqlVersion)
+    api("org.jetbrains.exposed", "exposed-core", exposedVersion)
+    api("org.jetbrains.exposed", "exposed-dao", exposedVersion)
+    api("org.jetbrains.exposed", "exposed-jdbc", exposedVersion)
 }
 
 publishing {

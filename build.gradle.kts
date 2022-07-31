@@ -102,10 +102,6 @@ with(tasks) {
         }
     }
 
-    wrapper {
-        gradleVersion = "7.4.2"
-    }
-
     java {
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
     }

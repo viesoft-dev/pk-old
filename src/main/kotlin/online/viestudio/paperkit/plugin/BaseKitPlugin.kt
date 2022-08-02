@@ -1,6 +1,5 @@
 package online.viestudio.paperkit.plugin
 
-import kotlinx.coroutines.launch
 import online.viestudio.paperkit.bukkit.syncCommands
 import online.viestudio.paperkit.collections.concurrentSetOf
 import online.viestudio.paperkit.command.CommandsDeclaration
@@ -18,7 +17,6 @@ import online.viestudio.paperkit.config.writer.SnakeYamlConfigWriter
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.koin.KoinModulesContainer
 import online.viestudio.paperkit.koin.pluginQualifier
-import online.viestudio.paperkit.lifecycle.LifecycleListener
 import online.viestudio.paperkit.listener.KitListener
 import online.viestudio.paperkit.listener.register
 import online.viestudio.paperkit.listener.unregister
@@ -35,7 +33,7 @@ import org.koin.core.module.Module as KoinModule
  * Implementation of [KitPlugin] supposed to be extended.
  *
  * @param nThreads Count of threads to allocate by its coroutine scope.
- * Default is equivalent to number of available processors.
+ *     Default is equivalent to number of available processors.
  */
 abstract class BaseKitPlugin(
     nThreads: Int = Runtime.getRuntime().availableProcessors(),
@@ -53,7 +51,6 @@ abstract class BaseKitPlugin(
     protected val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
     protected val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
     private val bindedListeners = concurrentSetOf<KitListener>().apply { addAll(bindListeners) }
-    private val registeredLifecycleListeners = concurrentSetOf<LifecycleListener>()
     private val qualifier get() = pluginQualifier
     private val appearanceSources by lazy {
         listOf(
@@ -82,7 +79,6 @@ abstract class BaseKitPlugin(
         registerCommands()
         onStart()
         registerListeners()
-        notifyLifecycleListenersOfStart()
     }.onSuccess {
         state = State.Started
         log.d { "Plugin started in $it millis." }
@@ -92,10 +88,6 @@ abstract class BaseKitPlugin(
         }
         log.w(it) { "Plugin starting failed." }
     }.isSuccess
-
-    private suspend fun notifyLifecycleListenersOfStart() {
-        registeredLifecycleListeners.forEach { it.onStart() }
-    }
 
     private fun registerListeners() {
         bindedListeners.forEach(KitListener::register)
@@ -115,10 +107,7 @@ abstract class BaseKitPlugin(
         }
     }
 
-    /**
-     * Invoked when plugin is starting.
-     * Supposed to override whenever needed.
-     */
+    /** Invoked when plugin is starting. Supposed to override whenever needed. */
     protected open suspend fun onStart() {
         // Should do nothing by default.
     }
@@ -128,7 +117,6 @@ abstract class BaseKitPlugin(
         state = State.Stopping
         unregisterListeners()
         unregisterCommands()
-        notifyLifecycleListenersOfStop()
         onStop()
     }.onSuccess {
         state = State.Stopped
@@ -137,10 +125,6 @@ abstract class BaseKitPlugin(
         state = State.Stopped
         log.w(it) { "Plugin stopping failed." }
     }.isSuccess
-
-    private suspend fun notifyLifecycleListenersOfStop() {
-        registeredLifecycleListeners.forEach { it.onStop() }
-    }
 
     private fun unregisterListeners() {
         bindedListeners.forEach(KitListener::unregister)
@@ -163,10 +147,7 @@ abstract class BaseKitPlugin(
         }
     }
 
-    /**
-     * Invoked when plugin is stopping.
-     * Supposed to override whenever needed.
-     */
+    /** Invoked when plugin is stopping. Supposed to override whenever needed. */
     protected open suspend fun onStop() {
         // Should do nothing by default.
     }
@@ -208,8 +189,8 @@ abstract class BaseKitPlugin(
     }
 
     /**
-     * Invoked when plugin is reloading resources.
-     * Supposed to override whenever needed.
+     * Invoked when plugin is reloading resources. Supposed to override
+     * whenever needed.
      */
     protected open suspend fun onReloadResources() {
         // Should do nothing by default
@@ -230,11 +211,6 @@ abstract class BaseKitPlugin(
             unloadModules(container.modules)
             unloadModules(listOf(configurationDeclaration.module, pluginModule))
         }
-    }
-
-    override suspend fun registerLifecycleListener(listener: LifecycleListener) {
-        registeredLifecycleListeners.add(listener)
-        if (state == State.Starting) scope.launch { listener.onStart() }
     }
 
     final override suspend fun bindListener(listener: KitListener) {

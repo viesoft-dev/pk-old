@@ -10,8 +10,7 @@ import org.bukkit.command.CommandSender
 
 abstract class ParentCommand(
     subCommands: List<KitCommand>,
-    strategy: SubCommandStrategy = SubCommandStrategy.FIRST,
-) : BaseKitCommand(subCommands, strategy) {
+) : BaseKitCommand(subCommands) {
 
     override val help: Component
         get() = text {

@@ -17,6 +17,7 @@ import org.bukkit.command.CommandSender
 
 abstract class BaseKitCommand(
     override val subCommands: List<KitCommand> = emptyList(),
+    private val strategy: SubCommandStrategy = SubCommandStrategy.FIRST,
 ) : KitCommand {
 
     final override val declaredArguments: List<Argument> by lazy { ArgumentsDeclaration().apply { declareArguments() }.arguments }
@@ -49,11 +50,19 @@ abstract class BaseKitCommand(
             }.getOrElse { false }
             if (!result) return
         }
-        runIfSubcommandPresented(args) {
-            execute(sender, args.sliceStart(1))
-            return
+        if (strategy == SubCommandStrategy.FIRST) {
+            runIfSubcommandPresented(args) {
+                execute(sender, args.sliceStart(1))
+                return
+            }
         }
         if (!verifyArguments(sender, args)) return
+        if (strategy == SubCommandStrategy.LAST) {
+            runIfSubcommandPresented(args) {
+                execute(sender, args.sliceStart(minArguments + 1))
+                return
+            }
+        }
         runCatching {
             onExecute(sender, args)
         }.onFailure {
@@ -99,7 +108,7 @@ abstract class BaseKitCommand(
         args.forEachIndexed { index, s ->
             val declaredArgument = declaredArguments.getOrNull(index) ?: return true
             val result = runCatching { declaredArgument.validator(args, s) }.getOrElse { "Plugin error" }
-            if (result != null && result.isNotEmpty()) {
+            if (!result.isNullOrEmpty()) {
                 runCatching { onWrongArgument(sender, args, index, result) }.onFailure {
                     log.logProblem(
                         sender,
@@ -161,9 +170,15 @@ abstract class BaseKitCommand(
     }
 
     private fun extraComplete(args: Arguments): List<String> {
-        return if (args.size == 1) {
-            subCommandNames
-        } else emptyList()
+        return if (strategy == SubCommandStrategy.FIRST) {
+            if (args.size == 1) {
+                subCommandNames
+            } else emptyList()
+        } else {
+            if (args.size == minArguments + 1) {
+                subCommandNames
+            } else emptyList()
+        }
     }
 
     private inline fun runIfSubcommandPresented(args: Arguments, block: KitCommand.() -> Unit) {

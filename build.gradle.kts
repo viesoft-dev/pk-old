@@ -13,6 +13,7 @@ val mysqlConnectorJava = "8.0.30"
 val sqliteJdbc = "3.36.0.3"
 val postgresql = "42.4.0"
 val exposed = "0.38.2"
+val ktor = "2.0.3"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -21,6 +22,7 @@ val exposed = "0.38.2"
 plugins {
     kotlin("jvm") version "1.7.10"
     kotlin("plugin.serialization") version "1.7.10"
+    id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.jetbrains.dokka") version "1.7.10"
@@ -50,6 +52,9 @@ dependencies {
     api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerialization)
     // Dependency injection
     api("io.insert-koin", "koin-core", koin)
+    // Http Client
+    api("io.ktor", "ktor-client-core", ktor)
+    api("io.ktor", "ktor-client-okhttp", ktor)
     // Database
     api("mysql", "mysql-connector-java", mysqlConnectorJava)
     api("org.xerial", "sqlite-jdbc", sqliteJdbc)
@@ -57,6 +62,9 @@ dependencies {
     api("org.jetbrains.exposed", "exposed-core", exposed)
     api("org.jetbrains.exposed", "exposed-dao", exposed)
     api("org.jetbrains.exposed", "exposed-jdbc", exposed)
+    // Gradle
+    compileOnly("com.github.paper-kit", "gradle-paper-kit", project.version.toString())
+    ksp("com.github.paper-kit", "gradle-paper-kit", project.version.toString())
 }
 
 publishing {
@@ -68,6 +76,15 @@ publishing {
 
             from(components["java"])
             artifact(tasks.kotlinSourcesJar)
+        }
+    }
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDir(file("build/generated/ksp/main/kotlin"))
         }
     }
 }

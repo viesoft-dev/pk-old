@@ -1,7 +1,6 @@
 package online.viestudio.paperkit.plugin
 
 import online.viestudio.paperkit.bukkit.syncCommands
-import online.viestudio.paperkit.collections.concurrentSetOf
 import online.viestudio.paperkit.command.CommandsDeclaration
 import online.viestudio.paperkit.command.KitCommand
 import online.viestudio.paperkit.command.KitCommandAdapter
@@ -17,9 +16,6 @@ import online.viestudio.paperkit.config.writer.SnakeYamlConfigWriter
 import online.viestudio.paperkit.koin.Global
 import online.viestudio.paperkit.koin.KoinModulesContainer
 import online.viestudio.paperkit.koin.pluginQualifier
-import online.viestudio.paperkit.listener.KitListener
-import online.viestudio.paperkit.listener.register
-import online.viestudio.paperkit.listener.unregister
 import online.viestudio.paperkit.plugin.KitPlugin.State
 import online.viestudio.paperkit.plugin.exception.InvalidPluginStateException
 import online.viestudio.paperkit.theme.Appearance
@@ -37,7 +33,6 @@ import org.koin.core.module.Module as KoinModule
  */
 abstract class BaseKitPlugin(
     nThreads: Int = Runtime.getRuntime().availableProcessors(),
-    bindListeners: List<KitListener> = emptyList(),
 ) : ScopeKitPlugin(nThreads) {
 
     final override lateinit var appearance: Appearance
@@ -50,7 +45,6 @@ abstract class BaseKitPlugin(
     }
     protected val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
     protected val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
-    private val bindedListeners = concurrentSetOf<KitListener>().apply { addAll(bindListeners) }
     private val qualifier get() = pluginQualifier
     private val appearanceSources by lazy {
         listOf(
@@ -78,7 +72,6 @@ abstract class BaseKitPlugin(
         reloadResources()
         registerCommands()
         onStart()
-        registerListeners()
     }.onSuccess {
         state = State.Started
         log.d { "Plugin started in $it millis." }
@@ -88,10 +81,6 @@ abstract class BaseKitPlugin(
         }
         log.w(it) { "Plugin starting failed." }
     }.isSuccess
-
-    private fun registerListeners() {
-        bindedListeners.forEach(KitListener::register)
-    }
 
     private suspend fun registerCommands() {
         commandsDeclaration.commands.forEach { registerCommand(it) }
@@ -115,7 +104,6 @@ abstract class BaseKitPlugin(
     final override suspend fun stop(): Boolean = safeRunWithMeasuring {
         ensureStateOrThrow(State.Started)
         state = State.Stopping
-        unregisterListeners()
         unregisterCommands()
         onStop()
     }.onSuccess {
@@ -125,10 +113,6 @@ abstract class BaseKitPlugin(
         state = State.Stopped
         log.w(it) { "Plugin stopping failed." }
     }.isSuccess
-
-    private fun unregisterListeners() {
-        bindedListeners.forEach(KitListener::unregister)
-    }
 
     private fun unregisterCommands() {
         commandsDeclaration.commands.forEach(this::unregisterCommand)
@@ -211,11 +195,6 @@ abstract class BaseKitPlugin(
             unloadModules(container.modules)
             unloadModules(listOf(configurationDeclaration.module, pluginModule))
         }
-    }
-
-    final override suspend fun bindListener(listener: KitListener) {
-        bindedListeners.add(listener)
-        if (state == State.Started) listener.register()
     }
 
     private fun ensureStateOrThrow(vararg expectedStates: State) {

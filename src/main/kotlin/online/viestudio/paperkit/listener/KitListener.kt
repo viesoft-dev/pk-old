@@ -1,6 +1,5 @@
 package online.viestudio.paperkit.listener
 
-import kotlinx.coroutines.launch
 import online.viestudio.paperkit.bukkit.getHandlerListFor
 import online.viestudio.paperkit.koin.plugin
 import online.viestudio.paperkit.plugin.KitPlugin
@@ -15,6 +14,7 @@ import org.koin.core.component.KoinComponent
 import java.lang.Deprecated
 import java.lang.reflect.Method
 import kotlin.Any
+import kotlin.Suppress
 import kotlin.apply
 import kotlin.getOrElse
 import kotlin.getValue
@@ -35,12 +35,8 @@ private val Method.eventClass: Class<out Event>?
         parameterTypes[0].asSubclass(Event::class.java)
     }.getOrElse { return null }
 
-fun KitListener.bindToPlugin() {
-    val plugin by plugin<KitPlugin>()
-    plugin.scope.launch { plugin.bindListener(this@bindToPlugin) }
-}
-
-fun KitListener.register() {
+@Suppress("NOTHING_TO_INLINE")
+inline fun KitListener.register() {
     val plugin by plugin<KitPlugin>()
     register(plugin)
 }

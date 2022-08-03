@@ -8,7 +8,10 @@ import online.viestudio.paperkit.style.buildBeautifulHelp
 import online.viestudio.paperkit.util.lineSeparator
 import org.bukkit.command.CommandSender
 
-abstract class ParentCommand(subCommands: List<KitCommand>) : BaseKitCommand(subCommands) {
+abstract class ParentCommand(
+    subCommands: List<KitCommand>,
+    strategy: SubCommandStrategy = SubCommandStrategy.FIRST,
+) : BaseKitCommand(subCommands, strategy) {
 
     override val help: Component
         get() = text {

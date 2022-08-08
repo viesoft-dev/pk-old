@@ -4,15 +4,15 @@
 
 val paper = "1.19-R0.1-SNAPSHOT"
 val coroutines = "1.6.4"
-val hoplite = "2.4.0"
+val hoplite = "2.5.1"
 val kotlinxSerialization = "1.4.0-RC"
 val koin = "3.2.0"
 val kaml = "0.46.0"
 val miniMessage = "4.11.0"
 val mysqlConnectorJava = "8.0.30"
-val sqliteJdbc = "3.36.0.3"
-val postgresql = "42.4.0"
-val exposed = "0.38.2"
+val sqliteJdbc = "3.39.2.0"
+val postgresql = "42.4.1"
+val exposed = "0.39.2"
 val ktor = "2.0.3"
 
 ///////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ plugins {
 }
 
 group = "online.viestudio"
-version = "2.2.0"
+version = "3.0.0"
 
 repositories {
     mavenCentral()

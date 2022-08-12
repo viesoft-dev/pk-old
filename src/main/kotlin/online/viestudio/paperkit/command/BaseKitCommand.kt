@@ -1,9 +1,5 @@
 package online.viestudio.paperkit.command
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
-import online.viestudio.paperkit.adventure.appendText
-import online.viestudio.paperkit.adventure.message
 import online.viestudio.paperkit.command.argument.Argument
 import online.viestudio.paperkit.config.kit.MessagesConfig.Companion.messages
 import online.viestudio.paperkit.koin.plugin
@@ -11,10 +7,11 @@ import online.viestudio.paperkit.logger.KitLogger
 import online.viestudio.paperkit.message.message
 import online.viestudio.paperkit.plugin.KitPlugin
 import online.viestudio.paperkit.style.buildBeautifulHelp
-import online.viestudio.paperkit.util.lineSeparator
 import online.viestudio.paperkit.util.sliceStart
+import org.bukkit.Server
 import org.bukkit.command.CommandSender
 
+@Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseKitCommand(
     override val subCommands: List<KitCommand> = emptyList(),
 ) : KitCommand {
@@ -26,11 +23,13 @@ abstract class BaseKitCommand(
     override val permission: String get() = config.permission
     override val minArguments: Int by lazy { declaredArguments.count { it.isRequired } }
     override val appearance get() = plugin.appearance
-    override val help: Component get() = buildBeautifulHelp()
     protected abstract val config: CommandConfig
     protected val plugin: KitPlugin by plugin()
+    protected val server: Server get() = plugin.server
+    protected val serverScope get() = plugin.serverScope
+    protected val scope get() = plugin.scope
     protected val log get() = plugin.log
-    private val subCommandNames: List<String> by lazy { subCommands.map { it.name } }
+    private val subCommandNames: List<String> by lazy { subCommands.map { it.aliases + it.name }.flatten() }
 
     final override suspend fun ensureInit() {
         minArguments
@@ -87,8 +86,8 @@ abstract class BaseKitCommand(
 
     protected abstract suspend fun onExecute(sender: CommandSender, args: Arguments): Boolean
 
-    private fun CommandSender.sendHelp() {
-        sendMessage(help)
+    protected open suspend fun CommandSender.sendHelp() {
+        sendMessage(buildBeautifulHelp())
     }
 
     private suspend fun verifyArguments(sender: CommandSender, args: Arguments): Boolean {
@@ -119,30 +118,19 @@ abstract class BaseKitCommand(
         wrongArgumentIndex: Int,
         description: String,
     ) {
-        sender.message {
-            content(description)
-            color(appearance.error)
-            appendText(lineSeparator)
-            appendText {
-                color(appearance.primary)
-                content(name)
-            }
-
-            args.forEachIndexed { index, s ->
-                val formattedStr: String
-                val color: TextColor
-                if (index != wrongArgumentIndex) {
-                    formattedStr = s
-                    color = appearance.primary
-                } else {
-                    formattedStr = "> $s <"
-                    color = appearance.error
+        with(appearance) {
+            sender.message(
+                """
+                <$errorHex>$description
+                <$primaryHex>$name ${
+                    args.mapIndexed { index, s ->
+                        if (index == wrongArgumentIndex) {
+                            "<$errorHex>> $s \\<"
+                        } else s
+                    }.joinToString(" ")
                 }
-                appendText {
-                    content(" $formattedStr")
-                    color(color)
-                }
-            }
+                """.trimIndent()
+            )
         }
     }
 
@@ -169,7 +157,9 @@ abstract class BaseKitCommand(
     private inline fun runIfSubcommandPresented(args: Arguments, block: KitCommand.() -> Unit) {
         if (args.isNotEmpty()) {
             val possibleName = args.first()
-            val subCommand = subCommands.find { it.name.equals(possibleName, true) }
+            val subCommand = subCommands.find { subCommand ->
+                subCommand.name.equals(possibleName, true) || subCommand.aliases.any { it.equals(possibleName, true) }
+            }
             subCommand?.block()
         }
     }

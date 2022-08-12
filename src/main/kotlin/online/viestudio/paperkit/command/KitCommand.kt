@@ -1,6 +1,5 @@
 package online.viestudio.paperkit.command
 
-import net.kyori.adventure.text.Component
 import online.viestudio.paperkit.command.argument.Argument
 import online.viestudio.paperkit.theme.Appearance
 import org.bukkit.command.Command
@@ -24,7 +23,6 @@ interface KitCommand : KoinComponent {
     val description: String
     val permission: String
     val appearance: Appearance
-    val help: Component
     val declaredArguments: List<Argument>
     val minArguments: Int
     val subCommands: List<KitCommand>

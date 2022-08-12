@@ -2,6 +2,8 @@ package online.viestudio.paperkit.util
 
 import kotlin.system.measureTimeMillis
 
+fun splitLines(text: String) = text.split(lineSeparator)
+
 inline fun safeRunWithMeasuring(block: () -> Unit): Result<Long> {
     val result: Result<Unit>
     val millis = measureTimeMillis {

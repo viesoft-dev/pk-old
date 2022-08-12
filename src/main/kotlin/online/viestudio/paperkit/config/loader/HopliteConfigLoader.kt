@@ -5,6 +5,7 @@ import com.sksamuel.hoplite.addStreamSource
 import online.viestudio.paperkit.config.loader.exception.NoValidSourceException
 import online.viestudio.paperkit.config.loader.hoplite.SerialNameParamMapper
 import online.viestudio.paperkit.config.source.Source
+import online.viestudio.paperkit.message.MessageDecoder
 import kotlin.reflect.KClass
 
 internal class HopliteConfigLoader(
@@ -14,6 +15,7 @@ internal class HopliteConfigLoader(
     private val builder
         get() = ConfigLoaderBuilder.empty()
             .withClassLoader(this::class.java.classLoader)
+            .addDecoder(MessageDecoder())
             .addParameterMapper(SerialNameParamMapper())
             .addProperties()
             .addDefaults()

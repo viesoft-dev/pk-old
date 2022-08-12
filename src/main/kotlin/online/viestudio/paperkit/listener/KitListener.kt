@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package online.viestudio.paperkit.listener
 
 import online.viestudio.paperkit.bukkit.getHandlerListFor

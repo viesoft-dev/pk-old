@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package online.viestudio.paperkit.message
 
 import net.kyori.adventure.audience.Audience

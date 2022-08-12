@@ -1,9 +1,10 @@
+@file:Suppress("unused")
+
 package online.viestudio.paperkit.collections
 
-import java.util.*
+import io.ktor.util.collections.*
 import java.util.concurrent.ConcurrentHashMap
 
-fun <T> concurrentSetOf(vararg elements: T): MutableSet<T> =
-    Collections.newSetFromMap<T>(ConcurrentHashMap()).apply { addAll(elements) }
+fun <T : Any> concurrentSetOf(vararg elements: T): MutableSet<T> = ConcurrentSet<T>().apply { addAll(elements) }
 
 fun <K, V> concurrentMapOf(): MutableMap<K, V> = ConcurrentHashMap()

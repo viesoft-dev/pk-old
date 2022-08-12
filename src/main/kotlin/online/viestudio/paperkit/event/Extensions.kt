@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package online.viestudio.paperkit.event
 
 import online.viestudio.paperkit.plugin.KitPlugin

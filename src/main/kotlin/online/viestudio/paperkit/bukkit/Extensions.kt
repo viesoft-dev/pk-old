@@ -8,8 +8,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.SimplePluginManager
 
@@ -40,10 +38,6 @@ internal fun Server.syncCommands() {
 }
 
 inline fun Server.onlinePlayers(action: (Player) -> Unit) = onlinePlayers.forEach(action)
-
-inline fun ItemStack.editMeta(block: ItemMeta.() -> Unit) {
-    itemMeta = itemMeta.apply(block)
-}
 
 fun Cancellable.cancel() {
     isCancelled = true

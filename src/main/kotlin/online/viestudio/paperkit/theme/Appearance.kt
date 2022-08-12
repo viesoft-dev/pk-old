@@ -55,7 +55,7 @@ data class Appearance(
     val errorHex: String = DEFAULT_ERROR_HEX,
     @Comment(
         """
-            The error color used in the plugin for text that message about success.
+            The okay color used in the plugin for text that message about success.
             It's recommended to use a different color than the others.
             
             Supports only HEX format of colors.

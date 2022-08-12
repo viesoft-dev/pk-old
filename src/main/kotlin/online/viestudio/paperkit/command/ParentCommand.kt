@@ -17,7 +17,7 @@ abstract class ParentCommand(
             text {
                 append(prefix)
                 appendText {
-                    content(" ${name.replaceFirstChar { it.uppercase() }}")
+                    content(" ${this@ParentCommand.name.replaceFirstChar { it.uppercase() }}")
                     color(accent)
                 }
                 showTextOnHover {

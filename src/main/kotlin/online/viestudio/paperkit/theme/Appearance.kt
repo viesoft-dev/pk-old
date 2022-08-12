@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import online.viestudio.paperkit.adventure.hexColor
 import online.viestudio.paperkit.config.Comment
 
+@Suppress("unused")
 @Serializable
 data class Appearance(
     @Comment(
@@ -52,6 +53,15 @@ data class Appearance(
         """
     )
     val errorHex: String = DEFAULT_ERROR_HEX,
+    @Comment(
+        """
+            The error color used in the plugin for text that message about success.
+            It's recommended to use a different color than the others.
+            
+            Supports only HEX format of colors.
+        """
+    )
+    val okayHex: String = DEFAULT_OKAY_HEX,
 ) {
 
     @Transient
@@ -64,6 +74,9 @@ data class Appearance(
     val accent: TextColor = hexColor(accentHex) ?: hexColor(DEFAULT_ACCENT_HEX)!!
 
     @Transient
+    val okay: TextColor = hexColor(accentHex) ?: hexColor(DEFAULT_OKAY_HEX)!!
+
+    @Transient
     val warn: TextColor = hexColor(warnHex) ?: hexColor(DEFAULT_WARN_HEX)!!
 
     @Transient
@@ -74,6 +87,7 @@ data class Appearance(
         const val DEFAULT_PLUGIN_PREFIX = "<#B8B3E9>[<#F5F5F5>PaperKit<#B8B3E9>]"
         const val DEFAULT_PRIMARY_HEX = "#B8B3E9"
         const val DEFAULT_ACCENT_HEX = "#F5F5F5"
+        const val DEFAULT_OKAY_HEX = "#5CFF5C"
         const val DEFAULT_WARN_HEX = "#f6cd61"
         const val DEFAULT_ERROR_HEX = "#fe8a71"
     }

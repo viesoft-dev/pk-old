@@ -97,7 +97,7 @@ abstract class BaseKitCommand(
         }
         args.forEachIndexed { index, s ->
             val declaredArgument = declaredArguments.getOrNull(index) ?: return true
-            val result = runCatching { declaredArgument.validator(args, s) }.getOrElse { "Plugin error" }
+            val result = runCatching { declaredArgument.validator(sender, args, s) }.getOrElse { "Plugin error" }
             if (!result.isNullOrEmpty()) {
                 runCatching { onWrongArgument(sender, args, index, result) }.onFailure {
                     log.logProblem(
@@ -125,7 +125,7 @@ abstract class BaseKitCommand(
                 <$primaryHex>$name ${
                     args.mapIndexed { index, s ->
                         if (index == wrongArgumentIndex) {
-                            "<$errorHex>> $s \\<"
+                            "<$errorHex>> $s \\<<$primaryHex>"
                         } else s
                     }.joinToString(" ")
                 }
@@ -143,7 +143,7 @@ abstract class BaseKitCommand(
         if (args.isEmpty()) return emptyList()
         val declaredArgument = declaredArguments.getOrNull(args.lastIndex) ?: return extraComplete(args)
         val complete = runCatching {
-            declaredArgument.completer(args, args.last())
+            declaredArgument.completer(sender, args, args.last())
         }.onFailure { log.logProblem(sender, args, it) }.getOrElse { emptyList() }
         return complete + extraComplete(args)
     }

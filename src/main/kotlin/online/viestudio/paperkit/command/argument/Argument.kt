@@ -1,9 +1,10 @@
 package online.viestudio.paperkit.command.argument
 
 import online.viestudio.paperkit.command.Arguments
+import org.bukkit.command.CommandSender
 
-typealias Validator = suspend (args: Arguments, input: String) -> String?
-typealias Completer = suspend (args: Arguments, input: String) -> List<String>
+typealias Validator = suspend (sender: CommandSender, args: Arguments, input: String) -> String?
+typealias Completer = suspend (sender: CommandSender, args: Arguments, input: String) -> List<String>
 
 interface Argument {
 

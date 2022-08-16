@@ -5,6 +5,8 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import online.viestudio.paperkit.command.Arguments
 import online.viestudio.paperkit.command.ChildCommand
+import online.viestudio.paperkit.command.argument.emptyCompleter
+import online.viestudio.paperkit.command.argument.inputValidator
 import online.viestudio.paperkit.config.kit.CommandsConfig.Companion.commandsConfig
 import online.viestudio.paperkit.config.kit.MessagesConfig.Companion.messages
 import online.viestudio.paperkit.config.kit.TranslationConfig.Companion.translation
@@ -47,11 +49,11 @@ internal class ReloadCommand : ChildCommand() {
     override fun ArgumentsDeclaration.declareArguments() {
         argument {
             config { config.argument("plugin") }
-            completer { _, _ ->
+            emptyCompleter {
                 allPlugins.map { it.name }.toMutableList().apply { add("all") }
             }
-            validator { _, pluginName ->
-                if (pluginName.equals("all", true)) return@validator null
+            inputValidator { pluginName ->
+                if (pluginName.equals("all", true)) return@inputValidator null
                 val plugin = allPlugins.find { it.name.equals(pluginName, true) }
                 if (plugin == null) {
                     translation.pluginNotFound

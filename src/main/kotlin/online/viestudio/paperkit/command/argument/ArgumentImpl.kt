@@ -16,8 +16,8 @@ data class ArgumentImpl(
 
         override lateinit var configProvider: () -> ArgumentConfig
         override var isRequired: Boolean = true
-        override var validator: Validator = { _, _ -> null }
-        override var completer: Completer = { _, _ -> emptyList() }
+        override var validator: Validator = { _, _, _ -> null }
+        override var completer: Completer = { _, _, _ -> emptyList() }
 
         override fun config(configProvider: () -> ArgumentConfig) {
             this.configProvider = configProvider

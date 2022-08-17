@@ -22,6 +22,15 @@ inline fun Argument.Builder.onlinePlayerValidator(
     }
 }
 
+inline fun Argument.Builder.uintValidator(crossinline onNotUint: suspend () -> String) {
+    validator { _, _, input ->
+        val int = input.toUIntOrNull()
+        if (int == null) {
+            onNotUint()
+        } else null
+    }
+}
+
 inline fun Argument.Builder.intValidator(crossinline onNotInt: suspend () -> String) {
     validator { _, _, input ->
         val int = input.toIntOrNull()

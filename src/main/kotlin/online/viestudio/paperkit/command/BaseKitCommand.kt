@@ -29,7 +29,6 @@ abstract class BaseKitCommand(
     protected val serverScope get() = plugin.serverScope
     protected val scope get() = plugin.scope
     protected val log get() = plugin.log
-    private val subCommandNames: List<String> by lazy { subCommands.map { it.aliases + it.name }.flatten() }
 
     final override suspend fun ensureInit() {
         minArguments
@@ -141,16 +140,16 @@ abstract class BaseKitCommand(
         }
 
         if (args.isEmpty()) return emptyList()
-        val declaredArgument = declaredArguments.getOrNull(args.lastIndex) ?: return extraComplete(args)
+        val declaredArgument = declaredArguments.getOrNull(args.lastIndex) ?: return extraComplete(sender, args)
         val complete = runCatching {
             declaredArgument.completer(sender, args, args.last())
         }.onFailure { log.logProblem(sender, args, it) }.getOrElse { emptyList() }
-        return complete + extraComplete(args)
+        return complete + extraComplete(sender, args)
     }
 
-    private fun extraComplete(args: Arguments): List<String> {
+    private fun extraComplete(sender: CommandSender, args: Arguments): List<String> {
         return if (args.size == 1) {
-            subCommandNames
+            subCommands.filter { sender.hasPermission(it.permission) }.map { it.aliases + it.name }.flatten()
         } else emptyList()
     }
 

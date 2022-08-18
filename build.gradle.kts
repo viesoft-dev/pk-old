@@ -4,16 +4,16 @@
 
 val paper = "1.19-R0.1-SNAPSHOT"
 val coroutines = "1.6.4"
-val hoplite = "2.5.1"
+val hoplite = "2.5.2"
 val kotlinxSerialization = "1.4.0-RC"
 val koin = "3.2.0"
-val kaml = "0.46.0"
+val kaml = "0.47.0"
 val miniMessage = "4.11.0"
 val mysqlConnectorJava = "8.0.30"
 val sqliteJdbc = "3.39.2.0"
-val postgresql = "42.4.1"
+val postgresql = "42.4.2"
 val exposed = "0.39.2"
-val ktor = "2.0.3"
+val ktor = "2.1.0"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings

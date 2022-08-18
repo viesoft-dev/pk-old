@@ -247,3 +247,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 ```
+
+### Special Thanks to:
+
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_gl=1*1fs8ada*_ga*OTgxODY4MDExLjE2NTk1MDc3Mzg.*_ga_9J976DJZ68*MTY2MDgyMjM4NC41NS4xLjE2NjA4MjI0NzAuMC4wLjA.&_ga=2.94226137.598266241.1660822384-981868011.1659507738">
+
+[JetBrains](https://www.jetbrains.com/), who supports PaperKit with one of
+their [Open Source Licenses](https://www.jetbrains.com/opensource/). IntelliJ IDEA is the recommended IDE for working
+with PaperKit.

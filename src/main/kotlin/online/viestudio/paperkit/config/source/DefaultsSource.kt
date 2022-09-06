@@ -18,5 +18,5 @@ data class DefaultsSource(
     private fun createDefaultAndSerialize() = clazz.createDefaultOrNull()?.encodeToStringOrNull()
 
     private fun KClass<out Any>.createDefaultOrNull(): Any? =
-        runCatching { primaryConstructor?.callBy(emptyMap()) }.getOrNull()
+        runCatching { primaryConstructor?.callBy(emptyMap()) }.onFailure { it.printStackTrace() }.getOrNull()
 }

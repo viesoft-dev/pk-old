@@ -14,7 +14,6 @@ val sqliteJdbc = "3.39.2.0"
 val postgresql = "42.4.2"
 val exposed = "0.39.2"
 val ktor = "2.1.0"
-val hikariCp = "5.0.1"
 
 ///////////////////////////////////////////////////////////////////////////
 // Settings
@@ -57,7 +56,6 @@ dependencies {
     api("io.ktor", "ktor-client-core", ktor)
     api("io.ktor", "ktor-client-okhttp", ktor)
     // Database
-    api("com.zaxxer", "HikariCP", hikariCp)
     api("mysql", "mysql-connector-java", mysqlConnectorJava)
     api("org.xerial", "sqlite-jdbc", sqliteJdbc)
     api("org.postgresql", "postgresql", postgresql)

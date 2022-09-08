@@ -129,7 +129,10 @@ with(tasks) {
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.apply {
             jvmTarget = "17"
-            freeCompilerArgs = freeCompilerArgs.plus("-opt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs = freeCompilerArgs + arrayOf(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi"
+            )
         }
     }
 }

@@ -9,7 +9,6 @@ abstract class ScopeKitPlugin(
     nThreads: Int,
 ) : BasicKitPlugin() {
 
-    @OptIn(DelicateCoroutinesApi::class)
     final override val scope: CoroutineScope by lazy {
         CoroutineScope(exceptionHandler + SupervisorJob() + newFixedThreadPoolContext(nThreads, name))
     }

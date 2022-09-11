@@ -6,10 +6,13 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 fun hexColor(hex: String) = TextColor.fromHexString(hex)
+
+val Component.asPlainText: String get() = PlainTextComponentSerializer.plainText().serialize(this)
 
 val String.asComponent: Component get() = MiniMessage.miniMessage().deserialize(this)
 

@@ -21,7 +21,7 @@ val hikariCp = "5.0.1"
 ///////////////////////////////////////////////////////////////////////////
 
 plugins {
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.7.20"
     kotlin("plugin.serialization") version "1.7.10"
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     `maven-publish`

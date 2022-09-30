@@ -22,7 +22,7 @@ val hikariCp = "5.0.1"
 
 plugins {
     kotlin("jvm") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.20"
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"

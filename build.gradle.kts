@@ -27,7 +27,7 @@ plugins {
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.jetbrains.dokka") version "1.7.10"
-    id("com.github.ben-manes.versions") version "0.42.0"
+    id("com.github.ben-manes.versions") version "0.44.0"
 }
 
 group = "online.viestudio"

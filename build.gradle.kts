@@ -26,7 +26,7 @@ plugins {
     id("com.google.devtools.ksp") version "1.7.21-1.0.8"
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.jetbrains.dokka") version "1.7.10"
+    id("org.jetbrains.dokka") version "1.7.20"
     id("com.github.ben-manes.versions") version "0.44.0"
 }
 

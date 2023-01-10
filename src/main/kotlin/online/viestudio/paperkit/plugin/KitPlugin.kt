@@ -20,24 +20,22 @@ interface KitPlugin : Plugin, KoinComponent {
     /** For running asynchronous tasks related to this plugin. */
     val context: CoroutineContext
 
-    /** For running server tasks in main thread. */
+    /** For running server tasks in the main thread. */
     val serverScope: CoroutineScope
 
-    /** For running server tasks in main thread. */
+    /** For running server tasks in the main thread. */
     val serverContext: CoroutineContext
 
     /**
-     * Starts all plugin processes. Require plugin to be in [State.Stopped]
-     * state.
+     * Starts all plugin processes.
+     * Requires plugin to be in [State.Stopped] state.
      *
-     * @return true if started, or false if starting failed, or already is
-     *     going.
+     * @return true if started, or false if starting failed, or already is going.
      */
     suspend fun start(): Boolean
 
     /**
-     * Stops all plugin processes. Require plugin to be in [State.Started]
-     * state.
+     * Stops all plugin processes. Requires plugin to be in [State.Started] state.
      *
      * @return true if stopped, or false if stopping already is going.
      */
@@ -47,8 +45,7 @@ interface KitPlugin : Plugin, KoinComponent {
      * Reloads plugin resources such as configuration. Require plugin to be in
      * [State.Starting] or [State.Started] state.
      *
-     * @return true if reloaded, or false if reloading failed, or plugin isn't
-     *     started.
+     * @return true if reloaded, or false if reloading failed, or plugin isn't started.
      */
     suspend fun reloadResources(): Boolean
 

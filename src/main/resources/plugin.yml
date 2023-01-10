@@ -1,8 +1,15 @@
 name: PaperKit
 version: "${version}"
-description: Framework to build great paper plugins
+description: Framework to build great Paper plugins
 author: vie10
 main: online.viestudio.paperkit.PaperKitPlugin
 load: STARTUP
-api-version: 1.18
+api-version: 1.19
 website: https://github.com/paper-kit/paper-kit
+libraries:
+  - "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
+  - "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+  - "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}"
+  - "org.jetbrains.kotlinx:kotlinx-serialization-cbor:${kotlinxSerializationVersion}"
+  - "org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinxSerializationVersion}"
+  - "io.insert-koin:koin-core:${koinVersion}"

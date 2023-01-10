@@ -27,12 +27,18 @@ inline fun Argument.Builder.inputCompleter(crossinline block: suspend (input: St
     completer { _, _, input -> block(input) }
 }
 
-fun <T> Argument.Builder.completer(vararg elements: T, prepare: suspend (T) -> String = { it.toString() }) {
+inline fun <T> Argument.Builder.completer(
+    vararg elements: T,
+    crossinline prepare: suspend (T) -> String = { it.toString() }
+) {
     completer { _, _, _ -> elements.map { prepare(it) } }
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Any> Argument.Builder.enumCompleter(enum: KClass<T>, prepare: suspend (T) -> String = { it.toString() }) {
+inline fun <T : Any> Argument.Builder.enumCompleter(
+    enum: KClass<T>,
+    crossinline prepare: suspend (T) -> String = { it.toString() }
+) {
     completer { _, _, _ ->
         val values = enum.staticFunctions.find { it.name == "values" }!!.call() as Array<T>
         values.map { prepare(it) }

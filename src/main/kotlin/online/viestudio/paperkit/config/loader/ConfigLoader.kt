@@ -9,25 +9,25 @@ import kotlin.reflect.KClass
 interface ConfigLoader {
 
     /**
-     * Loads the config from first valid source, or throws if all them are invalid.
+     * Loads the config from first valid source, or throws if all of them are invalid.
      *
      * @throws online.viestudio.paperkit.config.loader.exception.NoValidSourceException if no valid source has found
      * @param T generic type of the config.
-     * @param clazz class of the config.
-     * @param sources
+     * @param kClass class of the config.
+     * @param sources sources to load the config from.
      * @return loaded config
      */
-    fun <T : Any> loadOrThrow(clazz: KClass<T>, vararg sources: Source): T
+    fun <T : Any> loadOrThrow(kClass: KClass<T>, vararg sources: Source): T
 
-    fun <T : Any> loadOrThrow(clazz: KClass<T>, sources: List<Source>): T
+    fun <T : Any> loadOrThrow(kClass: KClass<T>, sources: List<Source>): T
 
-    fun <T : Any> load(clazz: KClass<T>, vararg sources: Source): Result<T>
+    fun <T : Any> load(kClass: KClass<T>, vararg sources: Source): Result<T>
 
-    fun <T : Any> load(clazz: KClass<T>, sources: List<Source>): Result<T>
+    fun <T : Any> load(kClass: KClass<T>, sources: List<Source>): Result<T>
 
-    fun <T : Any> provider(clazz: KClass<T>, vararg source: Source): ConfigProvider<T>
+    fun <T : Any> provider(kClass: KClass<T>, vararg source: Source): ConfigProvider<T>
 
-    fun <T : Any> provider(clazz: KClass<T>, source: List<Source>): ConfigProvider<T>
+    fun <T : Any> provider(kClass: KClass<T>, source: List<Source>): ConfigProvider<T>
 
     fun addPlaceholderSources(vararg sources: Source)
 

@@ -1,37 +1,31 @@
-///////////////////////////////////////////////////////////////////////////
-// Versions
-///////////////////////////////////////////////////////////////////////////
-
-val paper = "1.19-R0.1-SNAPSHOT"
-val coroutines = "1.6.4"
-val hoplite = "2.5.2"
-val kotlinxSerialization = "1.4.0-RC"
-val koin = "3.2.0"
-val kaml = "0.47.0"
-val miniMessage = "4.11.0"
-val mysqlConnectorJava = "8.0.30"
-val sqliteJdbc = "3.39.2.0"
-val postgresql = "42.4.2"
-val exposed = "0.39.2"
-val ktor = "2.1.0"
-val hikariCp = "5.0.1"
-
-///////////////////////////////////////////////////////////////////////////
-// Settings
-///////////////////////////////////////////////////////////////////////////
+//region Versions
+val paperVersion: String by project
+val coroutinesVersion: String by project
+val hopliteVersion: String by project
+val kotlinxSerializationVersion: String by project
+val koinVersion: String by project
+val kamlVersion: String by project
+val miniMessageVersion: String by project
+val mysqlConnectorJavaVersion: String by project
+val sqliteJdbcVersion: String by project
+val postgresqlVersion: String by project
+val exposedVersion: String by project
+val ktorVersion: String by project
+val hikariCpVersion: String by project
+val paperKitGradleVersion: String by project
+//endregion
 
 plugins {
-    kotlin("jvm") version "1.7.21"
-    kotlin("plugin.serialization") version "1.7.21"
-    id("com.google.devtools.ksp") version "1.7.21-1.0.8"
-    `maven-publish`
+    kotlin("jvm") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.0"
+    id("com.google.devtools.ksp") version "1.8.0-1.0.8"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.jetbrains.dokka") version "1.7.20"
-    id("com.github.ben-manes.versions") version "0.44.0"
+    `maven-publish`
 }
 
 group = "online.viestudio"
-version = "4.0.0"
+version = "5.0.0"
 
 repositories {
     mavenCentral()
@@ -41,32 +35,29 @@ repositories {
 
 dependencies {
     // Kotlin
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines)
+    api(kotlin("reflect"))
+    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutinesVersion)
     // Configuration
-    api("com.sksamuel.hoplite", "hoplite-yaml", hoplite)
+    implementation("com.sksamuel.hoplite", "hoplite-yaml", hopliteVersion)
     // Paper
-    api("io.papermc.paper", "paper-api", paper)
-    api("net.kyori", "adventure-text-minimessage", miniMessage)
+    api("io.papermc.paper", "paper-api", paperVersion)
     // (De)Serialization
-    api("com.charleskorn.kaml", "kaml", kaml)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerialization)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerialization)
+    implementation("com.charleskorn.kaml", "kaml", kamlVersion)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", kotlinxSerializationVersion)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-cbor", kotlinxSerializationVersion)
     // Dependency injection
-    api("io.insert-koin", "koin-core", koin)
-    // Http Client
-    api("io.ktor", "ktor-client-core", ktor)
-    api("io.ktor", "ktor-client-okhttp", ktor)
+    api("io.insert-koin", "koin-core", koinVersion)
     // Database
-    api("com.zaxxer", "HikariCP", hikariCp)
-    api("mysql", "mysql-connector-java", mysqlConnectorJava)
-    api("org.xerial", "sqlite-jdbc", sqliteJdbc)
-    api("org.postgresql", "postgresql", postgresql)
-    api("org.jetbrains.exposed", "exposed-core", exposed)
-    api("org.jetbrains.exposed", "exposed-dao", exposed)
-    api("org.jetbrains.exposed", "exposed-jdbc", exposed)
+    api("com.zaxxer", "HikariCP", hikariCpVersion)
+    api("mysql", "mysql-connector-java", mysqlConnectorJavaVersion)
+    api("org.xerial", "sqlite-jdbc", sqliteJdbcVersion)
+    api("org.postgresql", "postgresql", postgresqlVersion)
+    api("org.jetbrains.exposed", "exposed-core", exposedVersion)
+    api("org.jetbrains.exposed", "exposed-dao", exposedVersion)
+    api("org.jetbrains.exposed", "exposed-jdbc", exposedVersion)
     // Gradle
-    compileOnly("com.github.paper-kit", "gradle-paper-kit", project.version.toString())
-    ksp("com.github.paper-kit", "gradle-paper-kit", project.version.toString())
+    compileOnly("com.github.paper-kit", "gradle-paper-kit", paperKitGradleVersion)
+    ksp("com.github.paper-kit", "gradle-paper-kit", paperKitGradleVersion)
 }
 
 publishing {
@@ -91,10 +82,6 @@ sourceSets {
     }
 }
 
-///////////////////////////////////////////////////////////////////////////
-// Tasks
-///////////////////////////////////////////////////////////////////////////
-
 with(tasks) {
     processResources {
         val properties = linkedMapOf(
@@ -104,21 +91,24 @@ with(tasks) {
         filesMatching(
             setOf("plugin.yml")
         ) {
-            expand(properties)
+            expand(project.properties + properties)
         }
     }
 
     shadowJar {
         archiveFileName.set("${project.name}-${project.version}-framework.jar")
 
-        fun ResolvedDependency.containsOrParents(content: String): Boolean {
-            return name.contains(content) || parents.find { it.containsOrParents(content) } != null
-        }
-
         dependencies {
-            exclude {
-                it.containsOrParents("paper-api")
-            }
+            // Declared as libraries in plugin.yml so will be downloaded on first start.
+            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+            exclude(dependency("org.jetbrains.kotlin:kotlin-reflect"))
+            exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core"))
+            exclude(dependency("org.jetbrains.kotlinx:kotlinx-serialization-cbor"))
+            exclude(dependency("org.jetbrains.kotlinx:kotlinx-serialization-json"))
+            exclude(dependency("io.insert-koin:koin-core"))
+            // Part of the server.
+            exclude(dependency("org.jetbrains:annotations"))
+            exclude(dependency("io.papermc:paper-api"))
         }
     }
 
@@ -131,7 +121,9 @@ with(tasks) {
             jvmTarget = "17"
             freeCompilerArgs = freeCompilerArgs + arrayOf(
                 "-opt-in=kotlin.RequiresOptIn",
-                "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi"
+                "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.InternalCoroutinesApi",
             )
         }
     }

@@ -29,7 +29,7 @@ internal class HopliteConfigLoader(
         return this
     }
 
-    override fun <T : Any> load(clazz: KClass<T>, sources: List<Source>): Result<T> = runCatching {
+    override fun <T : Any> load(kClass: KClass<T>, sources: List<Source>): Result<T> = runCatching {
         val builder = builder
         var validSources = 0
         sources.forEach { source ->
@@ -38,7 +38,7 @@ internal class HopliteConfigLoader(
                 builder.addStreamSource(it, extension)
             }
         }
-        if (validSources == 0) throw NoValidSourceException(sources.toList(), clazz)
-        builder.build().loadConfigOrThrow(clazz, emptyList())
+        if (validSources == 0) throw NoValidSourceException(sources.toList(), kClass)
+        builder.build().loadConfigOrThrow(kClass, emptyList())
     }
 }

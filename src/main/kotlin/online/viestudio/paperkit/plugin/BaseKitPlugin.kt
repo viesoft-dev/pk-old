@@ -20,7 +20,7 @@ import online.viestudio.paperkit.plugin.KitPlugin.State
 import online.viestudio.paperkit.plugin.exception.InvalidPluginStateException
 import online.viestudio.paperkit.theme.Appearance
 import online.viestudio.paperkit.util.safeRunWithMeasuring
-import org.koin.core.qualifier.StringQualifier
+import org.koin.core.qualifier.qualifier
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.core.module.Module as KoinModule
@@ -43,9 +43,8 @@ abstract class BaseKitPlugin(
     private val commandsDeclaration by lazy {
         CommandsDeclaration().apply { declareCommands() }
     }
-    protected val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
-    protected val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
-    private val qualifier get() = pluginQualifier
+    private val configWriter: ConfigWriter by lazy { SnakeYamlConfigWriter() }
+    private val configLoader: ConfigLoader by lazy { HopliteConfigLoader("yaml") }
     private val appearanceSources by lazy {
         listOf(
             FileSource(dataFolder.resolve("appearance.yml").path),
@@ -55,16 +54,24 @@ abstract class BaseKitPlugin(
     }
     private val pluginModule: KoinModule by lazy {
         module {
-            single(StringQualifier(name)) { this@BaseKitPlugin } bind KitPlugin::class
-            single(qualifier) { this@BaseKitPlugin } bind KitPlugin::class
+            single(qualifier(name)) { this@BaseKitPlugin } bind KitPlugin::class
+            single(pluginQualifier) { this@BaseKitPlugin } bind KitPlugin::class
+            single(pluginQualifier) { configWriter }
+            single(pluginQualifier) { configLoader }
         }
     }
 
-    protected open fun CommandsDeclaration.declareCommands() {}
+    protected open fun CommandsDeclaration.declareCommands() {
+        // No commands declared by default.
+    }
 
-    protected open fun ConfigurationDeclaration.declareConfiguration() {}
+    protected open fun ConfigurationDeclaration.declareConfiguration() {
+        // No config declared by default.
+    }
 
-    protected open fun KoinModulesContainer.export() {}
+    protected open fun KoinModulesContainer.export() {
+        // No exports by default.
+    }
 
     final override suspend fun start(): Boolean = safeRunWithMeasuring {
         ensureStateOrThrow(State.Stopped)

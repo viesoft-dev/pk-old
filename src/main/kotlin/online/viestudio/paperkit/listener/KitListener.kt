@@ -37,8 +37,7 @@ private val Method.eventClass: Class<out Event>?
         parameterTypes[0].asSubclass(Event::class.java)
     }.getOrElse { return null }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun KitListener.register() {
+fun KitListener.register() {
     val plugin by plugin<KitPlugin>()
     register(plugin)
 }

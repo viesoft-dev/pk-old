@@ -5,6 +5,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import online.viestudio.paperkit.command.Arguments
 import online.viestudio.paperkit.command.ChildCommand
+import online.viestudio.paperkit.command.argument.dsl.ArgumentsDeclaration
 import online.viestudio.paperkit.command.argument.emptyCompleter
 import online.viestudio.paperkit.command.argument.inputValidator
 import online.viestudio.paperkit.config.kit.CommandsConfig.Companion.commandsConfig
@@ -20,7 +21,7 @@ internal class ReloadCommand : ChildCommand() {
 
     override val config get() = commandsConfig.reload
     private val allPlugins get() = Global.koin.getAll<KitPlugin>().toSet()
-    private val Arguments.plugin: String get() = this[0]
+    private val Arguments.plugin get() = get(0)
 
     override suspend fun onExecute(sender: CommandSender, args: Arguments): Boolean {
         val plugins = if (args.plugin.equals("all", true)) {

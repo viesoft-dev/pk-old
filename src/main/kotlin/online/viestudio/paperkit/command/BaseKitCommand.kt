@@ -1,6 +1,7 @@
 package online.viestudio.paperkit.command
 
 import online.viestudio.paperkit.command.argument.Argument
+import online.viestudio.paperkit.command.argument.dsl.ArgumentsDeclaration
 import online.viestudio.paperkit.config.kit.MessagesConfig.Companion.messages
 import online.viestudio.paperkit.koin.plugin
 import online.viestudio.paperkit.logger.KitLogger
@@ -76,10 +77,10 @@ abstract class BaseKitCommand(
             Executing command $name failed.
             Sender: $sender.
             Arguments: ${args.joinToString(", ")}.
-            Thread: ${Thread.currentThread()}.
+            Thread: ${Thread.currentThread().name}.
             Error message: ${e.message}
             
-            This problem is related to ${plugin.name} plugin, report it to the developers.
+            This problem is related to the ${plugin.name} plugin, report it to the developers.
         """.trimIndent()
     }
 
@@ -96,15 +97,13 @@ abstract class BaseKitCommand(
         }
         args.forEachIndexed { index, s ->
             val declaredArgument = declaredArguments.getOrNull(index) ?: return true
-            val result = runCatching { declaredArgument.validator(sender, args, s) }.getOrElse { "Plugin error" }
+            val result = runCatching {
+                declaredArgument.validator(sender, args, s)
+            }.onFailure { log.logProblem(sender, args, it) }.getOrElse { "Plugin error" }
             if (!result.isNullOrEmpty()) {
-                runCatching { onWrongArgument(sender, args, index, result) }.onFailure {
-                    log.logProblem(
-                        sender,
-                        args,
-                        it
-                    )
-                }
+                runCatching {
+                    onWrongArgument(sender, args, index, result)
+                }.onFailure { log.logProblem(sender, args, it) }
                 return false
             }
         }
@@ -160,20 +159,6 @@ abstract class BaseKitCommand(
                 subCommand.name.equals(possibleName, true) || subCommand.aliases.any { it.equals(possibleName, true) }
             }
             subCommand?.block()
-        }
-    }
-
-    class ArgumentsDeclaration {
-
-        private val _arguments: MutableList<Argument> = mutableListOf()
-        val arguments: List<Argument> = _arguments
-
-        inline fun argument(block: Argument.Builder.() -> Unit) {
-            addArgument(Argument.builder().apply(block).build())
-        }
-
-        fun addArgument(argument: Argument) {
-            _arguments.add(argument)
         }
     }
 }

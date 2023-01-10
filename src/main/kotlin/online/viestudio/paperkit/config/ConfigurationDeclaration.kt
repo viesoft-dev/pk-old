@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package online.viestudio.paperkit.config
 
 import online.viestudio.paperkit.config.loader.ConfigLoader

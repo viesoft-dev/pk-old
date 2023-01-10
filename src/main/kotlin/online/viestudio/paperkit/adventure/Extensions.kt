@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package online.viestudio.paperkit.adventure
 
 import net.kyori.adventure.audience.Audience
@@ -29,7 +31,7 @@ inline fun TextComponent.Builder.showTextOnHover(block: TextComponent.Builder.()
     hoverEvent(HoverEvent.showText(text(block)))
 }
 
-inline infix fun TextComponent.Builder.appendText(block: TextComponent.Builder.() -> Unit): TextComponent.Builder {
+inline fun TextComponent.Builder.appendText(block: TextComponent.Builder.() -> Unit): TextComponent.Builder {
     append(text(block))
     return this
 }

@@ -16,7 +16,7 @@ val paperKitGradleVersion: String by project
 //endregion
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
     kotlin("plugin.serialization") version "1.8.0"
     id("com.google.devtools.ksp") version "1.8.0-1.0.8"
     id("com.github.johnrengelman.shadow") version "7.1.2"

@@ -1,7 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.10" apply false
-    kotlin("plugin.serialization") version "1.8.10" apply false
-    id("org.jetbrains.dokka") version "1.7.20" apply false
+    // Could not find the module group and name for shadow.
     id("com.github.johnrengelman.shadow") version "7.1.2" apply false
 }
 
@@ -14,6 +12,7 @@ subprojects {
 
     repositories {
         mavenCentral()
+        // Paper
         maven("https://papermc.io/repo/repository/maven-public/")
     }
 }

@@ -1,0 +1,10 @@
+# Intellij Idea
+.idea/*
+!.idea/icon.png
+
+# Gradle
+build/
+.gradle/
+
+# MacOS
+.DS_Store
